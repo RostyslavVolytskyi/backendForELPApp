@@ -1,0 +1,16 @@
+{
+  "name": "elpnodeserver",
+  "version": "1.0.0",
+  "description": "backend for EatLikePro app",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://RostyslavVolytskyi@bitbucket.org/ifbbpros/elpnodeserver.git"
+  },
+  "author": "Rostyslav Volytskyi, Vitaliy Chorniy",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/ifbbpros/elpnodeserver#readme"
+}
