@@ -5,8 +5,8 @@ let Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
   username:         {type: String, required: true},
-  password:         {type: String, required: true, select: false},
   email:            {type: String, required: true, unique: true},
+  password:         {type: String, required: true, select: false},
   registrationTime: {type: Date, default: Date.now},
   registrationType: String,
   accountType:      String,

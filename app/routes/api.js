@@ -2,15 +2,16 @@ let User = require('../models/user');
 let jsonwebtoken = require('jsonwebtoken');
 let config = require('../../config');
 
+let secretKey = config.secretKey;
+
 // Methode to create token
 function createToken(user){
   var token = jsonwebtoken.sign({
     id: user._id,
     username: user.username
-  }, config.secretKey, {
+  }, secretKey, {
     expiresIn: '1h'
   });
-  console.log('token -> ', token);
   return token;
 }
 
@@ -18,13 +19,23 @@ module.exports = (express) => {
 
   let api = express.Router();
 
+  api.get('/users', function(req, res){
+    User.find({}, function(err, users){
+      if(err) {
+        res.send(err);
+        return;
+      }
+      res.json(users);
+    });
+  });
+
   //Post to DB
   api.post('/signup', function(req, res){
 
     let user = new User({
       username:           req.body.username,
-      password:           req.body.password,
       email:              req.body.email,
+      password:           req.body.password,
       registrationTime:   req.body.registrationTime,
       registrationType:   req.body.registrationType,
       accountType:        req.body.accountType,
@@ -45,8 +56,8 @@ module.exports = (express) => {
         }
         res.json({
           success: true,
-          message: `${user.username} was created with email: ${user.email}`,
-          token: token
+          message: `${user.username} was created with email: ${user.email}! Thanx for registration!`,
+          token
         });
       });
     }
