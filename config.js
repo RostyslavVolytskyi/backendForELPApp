@@ -1,6 +1,6 @@
 module.exports = {
 
-  "database" : "mongodb://127.0.0.1:27017/firstdatabase",
+  "database" : "mongodb://root:abc123@ds161029.mlab.com:61029/eatlikepro",
   "port" : process.env.PORT || 8080,
   "secretKey" : "YourSecretKey"
 

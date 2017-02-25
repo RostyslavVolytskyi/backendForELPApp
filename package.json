@@ -14,6 +14,8 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/ifbbpros/elpnodeserver#readme",
   "dependencies": {
-    "express": "^4.14.1"
+    "express": "^4.14.1",
+    "mongoose": "^4.8.4",
+    "morgan": "^1.8.1"
   }
 }
