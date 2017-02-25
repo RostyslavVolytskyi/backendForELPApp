@@ -2,6 +2,7 @@ let express = require('express');
 let config = require('./config');
 let morgan = require('morgan');
 let mongoose = require('mongoose');
+let bodyParser = require('body-parser');
 let app = express();
 
 let api = require('./app/routes/api')(express);
@@ -14,6 +15,9 @@ mongoose.connect(config.database, (err) => {
     console.log('Connected to the database');
   }
 });
+
+app.use(bodyParser.urlencoded({extended: true})); // for parsing application/json
+app.use(bodyParser.json()); // for parsing application/x-www-form-urlencoded
 
 // Logs all requests to a console
 app.use(morgan('dev'));
