@@ -4,10 +4,10 @@ let bcrypt = require('bcrypt-nodejs');
 let Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
-  name: String,
-  username: {type: String, required: true, index: {unique: true}},
+  username: {type: String, required: true},
   password: {type: String, required: true, select: false},
-  email: {type: String, required: true, unique: true}
+  email: {type: String, required: true, unique: true},
+  created: { type: Date, default: Date.now },
 });
 
 UserSchema.pre('save', function (next) {
@@ -15,9 +15,9 @@ UserSchema.pre('save', function (next) {
   let user = this;
   if(!user.isModified('password')) return next(); // only hash the password if it has been modified (or is new)
 
-  bcrypt.hash(user.password, null ,null, function(err, hash){
+  bcrypt.hash(user.password, null ,null, (err, hash) =>{
     if(err) return next(err);
-    user.password = hash;
+    user.password = hash; // override the cleartext password with the hashed one
     next();
   });
 });
