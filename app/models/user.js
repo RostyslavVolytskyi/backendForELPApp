@@ -4,14 +4,16 @@ let bcrypt = require('bcrypt-nodejs');
 let Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
-  username: {type: String, required: true},
-  password: {type: String, required: true, select: false},
-  email: {type: String, required: true, unique: true},
-  created: { type: Date, default: Date.now },
+  username:         {type: String, required: true},
+  password:         {type: String, required: true, select: false},
+  email:            {type: String, required: true, unique: true},
+  registrationTime: {type: Date, default: Date.now},
+  registrationType: String,
+  accountType:      String,
+  location:         Schema.Types.Mixed
 });
 
 UserSchema.pre('save', function (next) {
-
   let user = this;
   if(!user.isModified('password')) return next(); // only hash the password if it has been modified (or is new)
 
