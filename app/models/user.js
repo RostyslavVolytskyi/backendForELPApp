@@ -10,7 +10,8 @@ let UserSchema = new Schema({
   registrationTime: {type: Date, default: Date.now},
   registrationType: String,
   accountType:      String,
-  location:         Schema.Types.Mixed
+  location:         Schema.Types.Mixed,
+  map:              String
 });
 
 UserSchema.pre('save', function (next) {

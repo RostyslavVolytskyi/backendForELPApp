@@ -40,7 +40,8 @@ module.exports = (express) => {
       registrationTime:   req.body.registrationTime,
       registrationType:   req.body.registrationType,
       accountType:        req.body.accountType,
-      location:           req.body.location
+      location:           req.body.location,
+      map:                req.body.map
     });
 
     let token = createToken(user);
