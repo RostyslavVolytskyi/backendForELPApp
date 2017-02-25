@@ -3,6 +3,7 @@ let config = require('./config');
 let morgan = require('morgan');
 let mongoose = require('mongoose');
 let bodyParser = require('body-parser');
+mongoose.Promise = require('bluebird');
 let app = express();
 
 let api = require('./app/routes/api')(express);

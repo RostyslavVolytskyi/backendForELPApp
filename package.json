@@ -15,6 +15,7 @@
   "homepage": "https://bitbucket.org/ifbbpros/elpnodeserver#readme",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
+    "bluebird": "^3.4.7",
     "body-parser": "^1.16.1",
     "express": "^4.14.1",
     "jsonwebtoken": "^7.3.0",

@@ -19,6 +19,7 @@ module.exports = (express) => {
 
   let api = express.Router();
 
+  // Get all users
   api.get('/users', function(req, res){
     User.find({}, function(err, users){
       if(err) {
@@ -29,7 +30,7 @@ module.exports = (express) => {
     });
   });
 
-  //Post to DB
+  // Post to DB
   api.post('/signup', function(req, res){
 
     let user = new User({
@@ -67,7 +68,7 @@ module.exports = (express) => {
   // Middleware to verify token
   api.use(function(req, res, next){
     console.log("Somebody just came to our app!");
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    let token = req.body.token || req.query.token || req.headers['x-access-token'];
     if(token){
       jsonwebtoken.verify(token, secretKey, function(err, decoded){
         if(err){
