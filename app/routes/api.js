@@ -63,7 +63,31 @@ module.exports = (express) => {
         });
       });
     }
+  });
 
+  // For login
+  api.post('/login', function(req, res){
+    User.findOne({
+      username: req.body.username
+    }).select('username password').exec((err, user) => {
+      if(err) throw err;
+      if(!user){
+        res.send({message: "User doesn't exist"});
+      } else if(user){
+        let validPassword = user.comparePassword(req.body.password);
+        if(!validPassword){
+          res.send({message: "Invalid Password"});
+        } else {
+          //token
+          var token = createToken(user);
+          res.json({
+            success: true,
+            message: "Successfully login",
+            token: token
+          });
+        }
+      }
+    });
   });
 
   // Middleware to verify token
