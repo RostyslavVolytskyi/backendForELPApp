@@ -1,4 +1,8 @@
 let User = require('../models/user');
+let Upload = require('../models/upload');
+let multer = require('multer');
+const upload = multer({ dest: './uploads' }).any();
+let fs = require('fs');
 let jsonwebtoken = require('jsonwebtoken');
 let config = require('../../config');
 
@@ -18,6 +22,30 @@ function createToken(user){
 module.exports = (express) => {
 
   let api = express.Router();
+
+  // api.post('/profile', function (req, res) {
+  //   upload(req, res, function (err) {
+  //     if (err) {
+  //       res.send(err);
+  //       return;
+  //     }
+      
+  //     // res.send(req.files[0]);
+  //     let fileUpload = new Upload();
+  //     fileUpload.img.data = fs.readFileSync(req.files[0].path);
+  //     fileUpload.img.contentType = req.files[0].mimetype;
+  //     fileUpload.save( (err) => {
+  //       if(err) {
+  //         res.send(err);
+  //         return;
+  //       }
+  //       res.json({
+  //         success: true,
+  //         message: `File saved to DB`
+  //       });
+  //     });
+  //   })
+  // })
 
   // Get all users
   api.get('/users', function(req, res){
@@ -107,6 +135,30 @@ module.exports = (express) => {
       res.status(403).send({success: false, message: "No Token Provided"});
     }
   });
+
+  api.post('/upload', function (req, res) {
+    upload(req, res, function (err) {
+      if (err) {
+        res.send(err);
+        return;
+      }
+      
+      let fileUpload = new Upload();
+      fileUpload.img.data = fs.readFileSync(req.files[0].path);
+      fileUpload.img.contentType = req.files[0].mimetype;
+      fileUpload.img.path = req.files[0].path;
+      fileUpload.save( (err) => {
+        if(err) {
+          res.send(err);
+          return;
+        }
+        res.json({
+          success: true,
+          message: `File saved to DB`
+        });
+      });
+    })
+  })
 
   return api;
 }
