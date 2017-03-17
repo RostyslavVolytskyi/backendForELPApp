@@ -23,30 +23,6 @@ module.exports = (express) => {
 
   let api = express.Router();
 
-  // api.post('/profile', function (req, res) {
-  //   upload(req, res, function (err) {
-  //     if (err) {
-  //       res.send(err);
-  //       return;
-  //     }
-      
-  //     // res.send(req.files[0]);
-  //     let fileUpload = new Upload();
-  //     fileUpload.img.data = fs.readFileSync(req.files[0].path);
-  //     fileUpload.img.contentType = req.files[0].mimetype;
-  //     fileUpload.save( (err) => {
-  //       if(err) {
-  //         res.send(err);
-  //         return;
-  //       }
-  //       res.json({
-  //         success: true,
-  //         message: `File saved to DB`
-  //       });
-  //     });
-  //   })
-  // })
-
   // Get all users
   api.get('/users', function(req, res){
     User.find({}, function(err, users){
