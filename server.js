@@ -30,6 +30,6 @@ app.get('/', (req, res) => {
 // All routes are here
 app.use('/api', api);
 
-app.listen(config.port, () => {
-  console.log(`Example app listening on port ${config.port}!`);
+app.listen(config.port, (req, res) => {
+  console.log(`ELP server app listening on port ${config.port}!`);
 })
