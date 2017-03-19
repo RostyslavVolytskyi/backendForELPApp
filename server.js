@@ -1,14 +1,27 @@
-let express = require('express');
-let config = require('./config');
-let morgan = require('morgan');
-let mongoose = require('mongoose');
-let bodyParser = require('body-parser');
-mongoose.Promise = require('bluebird');
-let app = express();
-let fs = require('fs');
-let api = require('./app/routes/api')(express);
-var path = require("path");
+const express = require('express');
+const config = require('./config');
+const morgan = require('morgan');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const app = express();
+const fs = require('fs');
+const api = require('./app/routes/api')(express);
+const path = require("path");
+const cors = require('cors')
+const originsWhitelist = [
+    'http://localhost:3000' //this is front-end url for development
+];
+const corsOptions = {
+    origin: function (origin, callback) {
+        const isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+        callback(null, isWhitelisted);
+    },
+    credentials: true
+};
 
+app.use(cors(corsOptions));
+
+mongoose.Promise = require('bluebird');
 
 // DB connect
 mongoose.connect(config.database, (err) => {
@@ -29,8 +42,7 @@ app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/app/index.html'));
-    //__dirname : It will resolve to your project folder.
-})
+});
 
 // All routes are here
 app.use('/api', api);
