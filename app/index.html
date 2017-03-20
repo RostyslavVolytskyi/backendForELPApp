@@ -1,0 +1,108 @@
+<html>
+<head>
+  <title>ELP Server</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div>
+    <nav class="navbar navbar-inverse navbar-static-top">
+  <div class="container">
+    <a class="navbar-brand" href="/">ELP Server</a>
+  </div>
+</nav>
+    <div class="jumbotron"  style="padding:40px;">
+      <h3>Public API:</h3>
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>API:</th>
+            <th>Params</th>
+            <th>Returns</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>/api/users</td>
+            <td>
+              <code>
+              TODO
+              </code>
+            </td>
+            <td>
+              <code>
+              TODO
+              </code>
+            </td>
+          </tr>
+          <tr>
+            <td>/api/signup</td>
+            <td>
+              USER
+              <code>
+              {<br>
+                username:         {type: String, required: true},<br>
+                email:            {type: String, required: true},<br>
+                password:         {type: String, required: true},<br>
+                registrationTime: {type: Date, default: Date.now},<br>
+                registrationType: String,<br>
+                accountType:      String,<br>
+                location:         Schema.Types.Mixed,<br>
+                map:              String<br>
+              }
+              </code>
+
+            </td>
+            <td>
+              <code>
+                {<br>
+                  user: USER<br>
+                  success: boolean,<br>
+                  message: string,<br>
+                  token<br>
+                }
+              </code>
+            </td>
+          </tr>
+          <tr>
+            <td>/api/login</td>
+            <td>
+              <code>
+              {<br>
+                username:         {type: String, required: true},<br>
+                password:         {type: String, required: true},<br>
+              }
+              </code>
+            </td>
+            <td>
+              <code>
+                {<br>
+                  success: boolean,<br>
+                  message: string,<br>
+                  token<br>
+                }
+              </code>
+            </td>
+          </tr>
+
+          <tr>
+            <td>/api/upload</td>
+            <td>
+              <code>
+              TODO
+              </code>
+            </td>
+            <td>
+              <code>
+                TODO
+              </code>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

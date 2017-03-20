@@ -1,35 +1,52 @@
-let express = require('express');
-let config = require('./config');
-let morgan = require('morgan');
-let mongoose = require('mongoose');
-let bodyParser = require('body-parser');
-mongoose.Promise = require('bluebird');
-let app = express();
+const express = require('express');
+const config = require('./config');
+const morgan = require('morgan');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const app = express();
+const fs = require('fs');
+const api = require('./app/routes/api')(express);
+const path = require("path");
+const cors = require('cors')
+const originsWhitelist = [
+    'http://localhost:3000' //this is front-end url for development
+];
+const corsOptions = {
+    origin: function (origin, callback) {
+        const isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+        callback(null, isWhitelisted);
+    },
+    credentials: true
+};
 
-let api = require('./app/routes/api')(express);
+app.use(cors(corsOptions));
+
+mongoose.Promise = require('bluebird');
 
 // DB connect
 mongoose.connect(config.database, (err) => {
-  if(err) {
-    console.log('Not connected to DB', err);
-  } else {
-    console.log('Connected to the database');
-  }
+    if (err) {
+        console.log('Not connected to DB', err);
+    } else {
+        console.log('Connected to the database');
+    }
 });
 
-app.use(bodyParser.urlencoded({extended: true})); // for parsing application/json
+app.use(bodyParser.urlencoded({
+    extended: true
+})); // for parsing application/json
 app.use(bodyParser.json()); // for parsing application/x-www-form-urlencoded
 
 // Logs all requests to a console
 app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
-  res.send('Hello world!');
-})
+    res.sendFile(path.join(__dirname + '/app/index.html'));
+});
 
 // All routes are here
 app.use('/api', api);
 
-app.listen(config.port, () => {
-  console.log(`Example app listening on port ${config.port}!`);
+app.listen(config.port, (req, res) => {
+    console.log(`ELP server app listening on port ${config.port}!`);
 })

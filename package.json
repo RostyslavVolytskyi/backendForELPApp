@@ -23,5 +23,12 @@
     "mongoose": "^4.8.4",
     "morgan": "^1.8.1",
     "multer": "^1.3.0"
+  },
+  "devDependencies": {
+    "cors": "^2.8.1",
+    "express": "^4.15.2",
+    "gulp-open": "^2.0.0",
+    "nodemon": "^1.11.0",
+    "run-sequence": "^1.2.2"
   }
 }
