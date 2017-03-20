@@ -7,7 +7,8 @@ let open = require('gulp-open');
 //Running mongo
 //http://stackoverflow.com/a/28048696/46810
 gulp.task('start-mongo', (done) => {
-    const mongoserver = exec('mkdir mongo; mongod --dbpath mongo');
+    exec('mkdir mongo');
+    const mongoserver = exec('mongod --dbpath mongo');
 
     mongoserver.stdout.on('data', data => {
         console.log('stdout: ' + data.toString());
@@ -22,15 +23,16 @@ gulp.task('start-mongo', (done) => {
 
 });
 
-gulp.task('stop-mongo', () => {
+gulp.task('stop-mongo', (done) => {
     const mongoserver = exec('mongo admin --eval "db.shutdownServer();"');
 
     mongoserver.stdout.on('data', data => console.log('stdout: ' + data.toString()));
     mongoserver.stderr.on('data', (data) => console.log('stderr: ' + data.toString()));
     mongoserver.on('exit', (code) => console.log('stop-mongo with code ' + code.toString()));
 });
+
 gulp.task('start', (done) => {
-    const nodemon = exec('nodemon')
+    const nodemon = exec('nodemon');
 
     nodemon.stdout.on('data', data => {
         console.log('stdout: ' + data.toString());

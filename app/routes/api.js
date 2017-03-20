@@ -24,30 +24,6 @@ module.exports = (express) => {
 
     let api = express.Router();
 
-    // api.post('/profile', function (req, res) {
-    //   upload(req, res, function (err) {
-    //     if (err) {
-    //       res.send(err);
-    //       return;
-    //     }
-
-    //     // res.send(req.files[0]);
-    //     let fileUpload = new Upload();
-    //     fileUpload.img.data = fs.readFileSync(req.files[0].path);
-    //     fileUpload.img.contentType = req.files[0].mimetype;
-    //     fileUpload.save( (err) => {
-    //       if(err) {
-    //         res.send(err);
-    //         return;
-    //       }
-    //       res.json({
-    //         success: true,
-    //         message: `File saved to DB`
-    //       });
-    //     });
-    //   })
-    // })
-
     // Get all users
     api.get('/users', function (req, res) {
         User.find({}, function (err, users) {
@@ -128,29 +104,29 @@ module.exports = (express) => {
     });
 
     // Middleware to verify token
-    // api.use(function (req, res, next) {
-    //     console.log("Somebody just came to our app!");
-    //     console.log(req.body)
-    //     let token = req.body.token || req.query.token || req.headers['x-access-token'];
-    //     if (token) {
-    //         jsonwebtoken.verify(token, secretKey, function (err, decoded) {
-    //             if (err) {
-    //                 res.status(403).send({
-    //                     success: false,
-    //                     message: "Failed to authrntificate user"
-    //                 });
-    //             } else {
-    //                 req.decoded = decoded;
-    //                 next();
-    //             }
-    //         });
-    //     } else {
-    //         res.status(403).send({
-    //             success: false,
-    //             message: "No Token Provided"
-    //         });
-    //     }
-    // });
+    api.use(function (req, res, next) {
+        console.log("Somebody just came to our app!");
+        console.log(req.body)
+        let token = req.body.token || req.query.token || req.headers['x-access-token'];
+        if (token) {
+            jsonwebtoken.verify(token, secretKey, function (err, decoded) {
+                if (err) {
+                    res.status(403).send({
+                        success: false,
+                        message: "Failed to authrntificate user"
+                    });
+                } else {
+                    req.decoded = decoded;
+                    next();
+                }
+            });
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "No Token Provided"
+            });
+        }
+    });
 
     api.post('/upload', function (req, res) {
         upload(req, res, function (err) {
