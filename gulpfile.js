@@ -7,7 +7,6 @@ let open = require('gulp-open');
 //Running mongo
 //http://stackoverflow.com/a/28048696/46810
 gulp.task('start-mongo', (done) => {
-    exec('mkdir mongo');
     const mongoserver = exec('mongod --dbpath mongo');
 
     mongoserver.stdout.on('data', data => {
