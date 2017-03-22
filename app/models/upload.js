@@ -3,7 +3,7 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let UploadSchema = new Schema(
-  { img:              { data: Buffer, 
+  { file:              { data: Buffer, 
                       contentType: String,
                       path: String },
     registrationTime: {type: Date, default: Date.now},

@@ -22,7 +22,7 @@ gulp.task('start-mongo', (done) => {
 
 });
 
-gulp.task('stop-mongo', (done) => {
+gulp.task('stop-mongo', () => {
     const mongoserver = exec('mongo admin --eval "db.shutdownServer();"');
 
     mongoserver.stdout.on('data', data => console.log('stdout: ' + data.toString()));

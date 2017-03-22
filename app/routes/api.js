@@ -28,7 +28,7 @@ module.exports = (express) => {
     api.get('/users', function (req, res) {
         User.find({}, function (err, users) {
             if (err) {
-                res.send(err);
+                res.status(500).send(err);
                 return;
             }
             res.json(users);
@@ -55,14 +55,11 @@ module.exports = (express) => {
 
             let token = createToken(user);
 
-
             user.save((err) => {
                 if (err) {
-                    console.log(err)
-                    res.send(err);
+                    res.status(500).send(err);
                     return;
                 }
-                console.log('Sucess Adding user')
                 res.json({
                     user: user,
                     success: true,
@@ -106,7 +103,6 @@ module.exports = (express) => {
     // Middleware to verify token
     api.use(function (req, res, next) {
         console.log("Somebody just came to our app!");
-        console.log(req.body)
         let token = req.body.token || req.query.token || req.headers['x-access-token'];
         if (token) {
             jsonwebtoken.verify(token, secretKey, function (err, decoded) {
@@ -128,17 +124,18 @@ module.exports = (express) => {
         }
     });
 
+    // Upload a file
     api.post('/upload', function (req, res) {
         upload(req, res, function (err) {
             if (err) {
-                res.send(err);
+                res.status(500).send(err);
                 return;
             }
 
             let fileUpload = new Upload();
-            fileUpload.img.data = fs.readFileSync(req.files[0].path);
-            fileUpload.img.contentType = req.files[0].mimetype;
-            fileUpload.img.path = req.files[0].path;
+            fileUpload.file.data = fs.readFileSync(req.files[0].path);
+            fileUpload.file.contentType = req.files[0].mimetype;
+            fileUpload.file.path = req.files[0].path;
             fileUpload.save((err) => {
                 if (err) {
                     res.send(err);
@@ -151,6 +148,20 @@ module.exports = (express) => {
             });
         })
     })
+
+    // Delete user by ID
+    api.delete('/user/:id', function (req, res) {
+        User.findByIdAndRemove(req.params.id, function (err, user) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json({
+                message: "User successfully deleted",
+                id: user._id
+            });
+        });
+    });
 
     return api;
 }

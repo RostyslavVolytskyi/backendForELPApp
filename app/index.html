@@ -9,15 +9,16 @@
 <body>
   <div>
     <nav class="navbar navbar-inverse navbar-static-top">
-  <div class="container">
-    <a class="navbar-brand" href="/">ELP Server</a>
-  </div>
-</nav>
+      <div class="container">
+        <a class="navbar-brand" href="/">ELP Server</a>
+      </div>
+    </nav>
     <div class="jumbotron"  style="padding:40px;">
       <h3>Public API:</h3>
       <table class="table table-bordered table-hover">
         <thead>
           <tr>
+            <th>Method</th>
             <th>API:</th>
             <th>Params</th>
             <th>Returns</th>
@@ -25,19 +26,21 @@
         </thead>
         <tbody>
           <tr>
+            <td>GET</td>
             <td>/api/users</td>
             <td>
               <code>
-              TODO
+              /
               </code>
             </td>
             <td>
               <code>
-              TODO
+              [{_id: ObjectID,<br> username: string,<br> email: string,<br> registrationTime: Date},<br> ...]
               </code>
             </td>
           </tr>
           <tr>
+            <td>POST</td>
             <td>/api/signup</td>
             <td>
               USER
@@ -66,7 +69,9 @@
               </code>
             </td>
           </tr>
+
           <tr>
+            <td>POST</td>
             <td>/api/login</td>
             <td>
               <code>
@@ -88,21 +93,70 @@
           </tr>
 
           <tr>
+            <td colspan=4 style='background-color: #008080; font-weight: 700;'>Next requests should be made with token!</td>
+          </tr>
+          
+          <tr>
+            <td>POST</td>
             <td>/api/upload</td>
             <td>
               <code>
-              TODO
+              File should be uploaded
               </code>
             </td>
             <td>
               <code>
-                TODO
+                {<br>
+                  success: boolean,<br>
+                  message: string<br>
+                }
+              </code>
+            </td>
+          </tr>
+
+          <tr>
+            <td>DELETE</td>
+            <td>/api/user/:id</td>
+            <td>
+              <code>
+              { _id: ObjectID }
+              </code>
+            </td>
+            <td>
+              <code>
+                {<br>
+                  success: boolean,<br>
+                  id: user._id<br>
+                }
               </code>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+  </div>
+  
+  <div>
+    <h2>Try with curl:</h2>
+    <p><strong>GET:</strong><br>  
+    <code>curl http://localhost:9999/api/users</code>
+    </p>
+    <p><strong>POST:</strong><br>  
+    <code>curl -d username=Rosty -d email=Rosty@gmail.com -d password=rosty123 http://localhost:9999/api/signup</code>
+    </p>
+
+    <p>
+    <h4><i>Set token:</i></h4>
+    <code>curl -H "x-access-token: &lt;token goes here&gt;" http://localhost:9999</code>
+    </p>
+
+    <h4>Following requests only with token:</h4>
+    <p>
+    <strong>Upload file:</strong> <br>
+    <code>curl -F name=someName -F file=@README.md  http://localhost:9999/api/upload</code><br>
+    <strong>DELETE:</strong> <br>
+    <code>curl -X DELETE http://localhost:9999/api/user/58d19e770bf1c112486b</code>
+    </p>
   </div>
 </body>
 </html>
