@@ -13,7 +13,7 @@ const secretKey = config.secretKey;
 function createToken(user) {
     var token = jsonwebtoken.sign({
         id: user._id,
-        username: user.username
+        firstName: user.firstName
     }, secretKey, {
         expiresIn: '1h'
     });
@@ -24,33 +24,27 @@ module.exports = (express) => {
 
     let api = express.Router();
 
-    // Get all users
-    api.get('/users', function (req, res) {
-        User.find({}, function (err, users) {
-            if (err) {
-                res.status(500).send(err);
-                return;
-            }
-            res.json(users);
-        });
-    });
-
     // Post to DB
     api.post('/signup', function (req, res) {
-        if (req.body.username === null || req.body.username === '' ||
+        if (req.body.firstName === null || req.body.firstName === '' ||
+            req.body.lastName === null || req.body.lastName === '' ||
             req.body.password === null || req.body.password === '' ||
             req.body.email === null || req.body.email === '') {
-            res.send('Ensure username, password and email were provided!');
+              res.status(404).send({
+                  success: false,
+                    message: 'Ensure firstName, lastName,  password and email were provided!'
+              });
         } else {
             let user = new User({
-                username: req.body.username,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
                 email: req.body.email,
                 password: req.body.password,
                 registrationTime: req.body.registrationTime,
                 registrationType: req.body.registrationType,
                 accountType: req.body.accountType,
                 location: req.body.location,
-                map: req.body.map
+                image: req.body.image
             });
 
             let token = createToken(user);
@@ -61,9 +55,9 @@ module.exports = (express) => {
                     return;
                 }
                 res.json({
-                    user: user,
+                    user: user.getUserData(),
                     success: true,
-                    message: `${user.username} was created with email: ${user.email}! Thanx for registration!`,
+                    message: `${user.firstName} was created with email: ${user.email}! Thanx for registration!`,
                     token
                 });
                 res.send();
@@ -74,23 +68,27 @@ module.exports = (express) => {
     // For login
     api.post('/login', function (req, res) {
         User.findOne({
-            username: req.body.username
-        }).select('username password').exec((err, user) => {
+            email: req.body.email
+        }).select('firstName lastName registrationTime registrationType accountType location image email password').exec((err, user) => {
             if (err) throw err;
             if (!user) {
-                res.send({
-                    message: "User doesn't exist"
-                });
+              res.status(404).send({
+                  success: false,
+                  message: "User doesn't exist"
+              });
             } else if (user) {
                 let validPassword = user.comparePassword(req.body.password);
                 if (!validPassword) {
-                    res.send({
+                    res.status(401).send({
+                        userRegistered: true,
+                        success: false,
                         message: "Invalid Password"
                     });
                 } else {
                     //token
                     var token = createToken(user);
                     res.json({
+                        user: user.getUserData(),
                         success: true,
                         message: "Successfully login",
                         token: token
@@ -122,6 +120,17 @@ module.exports = (express) => {
                 message: "No Token Provided"
             });
         }
+    });
+
+    // Get all users
+    api.get('/users', function (req, res) {
+        User.find({}, function (err, users) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json(users);
+        });
     });
 
     // Upload a file
