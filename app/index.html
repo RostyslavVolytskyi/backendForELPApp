@@ -22,6 +22,7 @@
             <th>API:</th>
             <th>Params</th>
             <th>Returns</th>
+            <th>Description</th>
           </tr>
         </thead>
         <tbody>
@@ -37,6 +38,9 @@
               <code>
               [{_id: ObjectID,<br> username: string,<br> email: string,<br> registrationTime: Date},<br> ...]
               </code>
+            </td>
+            <td>
+              Returns array of all users
             </td>
           </tr>
           <tr>
@@ -68,6 +72,9 @@
                 }
               </code>
             </td>
+            <td>
+              Creates User
+            </td>
           </tr>
 
           <tr>
@@ -90,12 +97,15 @@
                 }
               </code>
             </td>
+            <td>
+              Login
+            </td>
           </tr>
 
           <tr>
-            <td colspan=4 style='background-color: #008080; font-weight: 700;'>Next requests should be made with token!</td>
+            <td colspan=5 style='background-color: #008080; font-weight: 700;'>Next requests should be made with token!</td>
           </tr>
-          
+
           <tr>
             <td>POST</td>
             <td>/api/upload</td>
@@ -131,17 +141,171 @@
               </code>
             </td>
           </tr>
+
+          <tr>
+            <td colspan=5 style='background-color: lightblue; font-weight: 700;'>TODO Api:</td>
+          </tr>
+
+          <tr>
+            <td>POST</td>
+            <td>/api/is-admin</td>
+            <td>
+              <code>
+              { user: USER }
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                  massage: 'User ${email} has admin rights', <br />
+                  userFound: true,<br>
+                  isAdmin: true<br>
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  mesage: 'User is not admin', <br />
+                  userFound: true,<br>
+                  isAdmin: false<br>
+                }<br>
+              </code>
+              user not fund:<br>
+              <code>
+                {<br>
+                  errorMsg: 'User not found', <br />
+                  userFound: false,<br>
+                  isAdmin: false<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Should find the user in users table and check if
+                user.type === 'admin'
+
+                also for security we can compare user password and emails provided from request
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>POST</td>
+            <td>/api/send-recovery-pass-email</td>
+            <td>
+              <code>
+              { email: email }
+              </code>
+            </td>
+            <td>
+              sucess:
+              <code>
+                {<br>
+                  message: 'Recovery pass email sent',<br />
+                  userFound: true,<br>
+                  sent: true,<br>
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  errorMsg: 'User not found'<br />
+                  userFound: false,<br>
+                  sent: false,<br>
+                }<br>
+              </code>
+              error sending email:<br>
+              <code>
+                {<br>
+                  errorMsg: 'error sending email'<br />
+                  userFound: true,<br>
+                  sent: false,<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+              should find the user with provided email, and send him a email with
+              password reset link
+
+              TODO: crate email on backend side, reset password functinalliy on fron end
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              POST
+            </td>
+            <td>
+              /api/quick-email
+            </td>
+            <td>
+              <code>
+                {<br>
+                  date: DateTime,<br>
+                  email: string,<br>
+                  ip: number<br>
+                  route: string<br>
+                }
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                  message: 'email sent',<br>
+                  sent: false,<br>
+                }<br>
+              </code>
+              error sending email:<br>
+              <code>
+                {<br>
+                  errorMsg: 'Failed sending email',<br>
+                  userFound: true,<br>
+                  sent: false,<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              efter receiving quick-email request back-end should store the data in DB,
+              send an email on the email provided in the request,
+              send email to each admin user
+
+              example of email to the who made the request:
+
+              <div>
+                <h3>Thank you for your request</h3>
+                <p>
+                  We will contact you within next 3 hours
+                </p>
+                {{TODO: some footer here}}
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              POST
+            </td>
+            <td>
+
+            </td>
+          </tr>
+
+
         </tbody>
       </table>
     </div>
   </div>
-  
+
   <div>
     <h2>Try with curl:</h2>
-    <p><strong>GET:</strong><br>  
+    <p><strong>GET:</strong><br>
     <code>curl http://localhost:9999/api/users</code>
     </p>
-    <p><strong>POST:</strong><br>  
+    <p><strong>POST:</strong><br>
     <code>curl -d username=Rosty -d email=Rosty@gmail.com -d password=rosty123 http://localhost:9999/api/signup</code>
     </p>
 
