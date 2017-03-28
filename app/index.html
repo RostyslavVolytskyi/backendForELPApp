@@ -26,23 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>GET</td>
-            <td>/api/users</td>
-            <td>
-              <code>
-              /
-              </code>
-            </td>
-            <td>
-              <code>
-              [{_id: ObjectID,<br> username: string,<br> email: string,<br> registrationTime: Date},<br> ...]
-              </code>
-            </td>
-            <td>
-              Returns array of all users
-            </td>
-          </tr>
+          
           <tr>
             <td>POST</td>
             <td>/api/signup</td>
@@ -107,6 +91,23 @@
           </tr>
 
           <tr>
+            <td>GET</td>
+            <td>/api/users</td>
+            <td>
+              <code>
+              /
+              </code>
+            </td>
+            <td>
+              <code>
+              [{_id: ObjectID,<br> username: string,<br> email: string,<br> registrationTime: Date},<br> ...]
+              </code>
+            </td>
+            <td>
+              Returns array of all users
+            </td>
+          </tr>
+          <tr>
             <td>POST</td>
             <td>/api/upload</td>
             <td>
@@ -121,6 +122,8 @@
                   message: string<br>
                 }
               </code>
+            </td>
+            <td>
             </td>
           </tr>
 
@@ -139,6 +142,8 @@
                   id: user._id<br>
                 }
               </code>
+            </td>
+            <td>
             </td>
           </tr>
 
@@ -284,16 +289,6 @@
               </div>
             </td>
           </tr>
-
-          <tr>
-            <td>
-              POST
-            </td>
-            <td>
-
-            </td>
-          </tr>
-
 
         </tbody>
       </table>
