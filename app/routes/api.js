@@ -8,11 +8,13 @@ const fs = require('fs');
 const jsonwebtoken = require('jsonwebtoken');
 const config = require('../../config');
 const secretKey = config.secretKey;
+const nodemailer = require('nodemailer');
 
 // Methode to create token
 function createToken(user) {
     var token = jsonwebtoken.sign({
         id: user._id,
+        email: user.email,
         firstName: user.firstName
     }, secretKey, {
         expiresIn: '1h'
@@ -170,6 +172,44 @@ module.exports = (express) => {
                 id: user._id
             });
         });
+    });
+
+    // Send mail
+    api.get('/mail', function(req, res) {
+        // create reusable transporter object using the default SMTP transport
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'name.surname@gmail.com',
+                pass: 'myCoolPass'
+            }
+        });
+
+        // setup email data with unicode symbols
+        let mailOptions = {
+            from: '"Eat Like Pro 👻" <ELP@eatLikePro.com>', // sender address
+            to: 'some@gmail.com, another@gmail.com', // list of receivers
+            subject: 'Hello ✔', // Subject line
+            text: 'Hello world ?', // plain text body
+            html: '<b>Hello world ?</b>' // html body
+        };
+
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+            console.log('Message %s sent: %s', info.messageId, info.response);
+        });
+
+        res.json({
+            success: true,
+            message: "Messages sent to default mails"
+        })
+    })
+
+    api.get('/me', function(req, res){
+        res.json(req.decoded);
     });
 
     return api;

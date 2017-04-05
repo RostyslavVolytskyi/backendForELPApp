@@ -147,6 +147,45 @@
             <td>
             </td>
           </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/mail</td>
+            <td>
+              <code>
+                /
+              </code>
+            </td>
+            <td>
+              <code>
+                {<br>
+                  success: boolean,<br>
+                  message: 'Messages sent to default mails'<br>
+                }
+              </code>
+            </td>
+            <td>Send default mail template to default mails (admins). TODO: create valid mail!</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/me</td>
+            <td>
+              <code>
+                /
+              </code>
+            </td>
+            <td>
+              <code>
+                {<br>
+                  id: ObjectID,<br>
+                  email: string,<br>
+                  firstName: string,<br>
+                  iat: number,<br>
+                  exp: number<br>
+                }
+              </code>
+            </td>
+            <td>Receive info about current user</td>
+          </tr>
 
           <tr>
             <td colspan=5 style='background-color: lightblue; font-weight: 700;'>TODO Api:</td>
@@ -218,7 +257,7 @@
                 {<br>
                   errorMsg: 'User not found'<br />
                   userFound: false,<br>
-                  sent: false,<br>
+                  sent: false<br>
                 }<br>
               </code>
               error sending email:<br>
@@ -226,7 +265,7 @@
                 {<br>
                   errorMsg: 'error sending email'<br />
                   userFound: true,<br>
-                  sent: false,<br>
+                  sent: false<br>
                 }
               </code>
             </td>
@@ -262,7 +301,7 @@
               <code>
                 {<br>
                   message: 'email sent',<br>
-                  sent: false,<br>
+                  sent: false<br>
                 }<br>
               </code>
               error sending email:<br>
@@ -270,7 +309,7 @@
                 {<br>
                   errorMsg: 'Failed sending email',<br>
                   userFound: true,<br>
-                  sent: false,<br>
+                  sent: false<br>
                 }<br>
               </code>
             </td>
@@ -296,7 +335,7 @@
     </div>
   </div>
 
-  <div>
+  <div style='padding: 30px; background-color: #d3ffce;'>
     <h2>Try with curl:</h2>
     <p><strong>GET:</strong><br>
     <code>curl http://localhost:9999/api/users</code>
