@@ -101,28 +101,28 @@ module.exports = (express) => {
     });
 
     // Middleware to verify token
-    api.use(function (req, res, next) {
-        console.log("Somebody just came to our app!");
-        let token = req.body.token || req.query.token || req.headers['x-access-token'];
-        if (token) {
-            jsonwebtoken.verify(token, secretKey, function (err, decoded) {
-                if (err) {
-                    res.status(403).send({
-                        success: false,
-                        message: "Failed to authrntificate user"
-                    });
-                } else {
-                    req.decoded = decoded;
-                    next();
-                }
-            });
-        } else {
-            res.status(403).send({
-                success: false,
-                message: "No Token Provided"
-            });
-        }
-    });
+    // api.use(function (req, res, next) {
+    //     console.log("Somebody just came to our app!");
+    //     let token = req.body.token || req.query.token || req.headers['x-access-token'];
+    //     if (token) {
+    //         jsonwebtoken.verify(token, secretKey, function (err, decoded) {
+    //             if (err) {
+    //                 res.status(403).send({
+    //                     success: false,
+    //                     message: "Failed to authrntificate user"
+    //                 });
+    //             } else {
+    //                 req.decoded = decoded;
+    //                 next();
+    //             }
+    //         });
+    //     } else {
+    //         res.status(403).send({
+    //             success: false,
+    //             message: "No Token Provided"
+    //         });
+    //     }
+    // });
 
     // Get all users
     api.get('/users', function (req, res) {
@@ -180,18 +180,18 @@ module.exports = (express) => {
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'name.surname@gmail.com',
-                pass: 'myCoolPass'
+                user: config.ELPmail,
+                pass: config.ELPpass
             }
         });
 
         // setup email data with unicode symbols
         let mailOptions = {
-            from: '"Eat Like Pro 👻" <ELP@eatLikePro.com>', // sender address
-            to: 'some@gmail.com, another@gmail.com', // list of receivers
-            subject: 'Hello ✔', // Subject line
-            text: 'Hello world ?', // plain text body
-            html: '<b>Hello world ?</b>' // html body
+            from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
+            to: config.adminMails, // list of receivers
+            subject: 'Change your life 🏋️', // Subject line
+            text: 'Hello username !!! You will use the best healthy app!! ❤️', // plain text body
+            html: 'Hello username !!! <b>You will use the best healthy app!! ❤️</b>' // html body
         };
 
         // send mail with defined transport object
@@ -204,7 +204,7 @@ module.exports = (express) => {
 
         res.json({
             success: true,
-            message: "Messages sent to default mails"
+            message: "Messages sent to admins"
         })
     })
 
