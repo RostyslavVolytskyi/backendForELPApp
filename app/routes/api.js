@@ -11,9 +11,16 @@ const secretKey = config.secretKey;
 
 // Methode to create token
 function createToken(user) {
-    var token = jsonwebtoken.sign({
+    const token = jsonwebtoken.sign({
         id: user._id,
-        firstName: user.firstName
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        registrationTime: user.registrationTime,
+        registrationType: user.registrationType,
+        accountType: user.accountType,
+        location: user.location,
+        image: user.image
     }, secretKey, {
         expiresIn: '1h'
     });

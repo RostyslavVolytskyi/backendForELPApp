@@ -148,50 +148,6 @@
 
           <tr>
             <td>POST</td>
-            <td>/api/is-admin</td>
-            <td>
-              <code>
-              { user: USER }
-              </code>
-            </td>
-            <td>
-              sucess:<br>
-              <code>
-                {<br>
-                  massage: 'User ${email} has admin rights', <br />
-                  userFound: true,<br>
-                  isAdmin: true<br>
-                }<br>
-              </code>
-              fail:<br>
-              <code>
-                {<br>
-                  mesage: 'User is not admin', <br />
-                  userFound: true,<br>
-                  isAdmin: false<br>
-                }<br>
-              </code>
-              user not fund:<br>
-              <code>
-                {<br>
-                  errorMsg: 'User not found', <br />
-                  userFound: false,<br>
-                  isAdmin: false<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Should find the user in users table and check if
-                user.type === 'admin'
-
-                also for security we can compare user password and emails provided from request
-              </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>POST</td>
             <td>/api/send-recovery-pass-email</td>
             <td>
               <code>
@@ -284,6 +240,653 @@
               </div>
             </td>
           </tr>
+          <tr>
+            <td>POST</td>
+            <td>/api/send-email</td>
+            <td>
+              <code>
+                {<br>
+                    &emsp; date: Date,<br>
+                    &emsp; fullName: string,<br>
+                    &emsp; ip: string,<br>
+                    &emsp; email: string,<br>
+                    &emsp; message: string<br>
+                }
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                  &emsp; massage: 'email sent', <br />
+                  &emsp; sent: true <br>
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; mesage: 'email not sent', <br />
+                  &emsp; sent: false,<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              <p>
+                Store received email in DB;
+                Send all admin users a notification email
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/search-meals</td>
+            <td>
+              <code>
+                /?name={pattern}`
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                  &emsp; meals: Array, <br />
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; meals: empty Array, <br />
+                }<br>
+              </code>
+            </td>
+            <td>
+              <p>
+                Search for meals by name in DB by matching pattern
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>GET</td>
+            <td>/api/search-users</td>
+            <td>
+              <code>
+                /?name={pattern}`
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                &emsp;  users: Array, <br />
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; users: empty Array, <br />
+                }<br>
+              </code>
+            </td>
+            <td>
+              <p>
+                Search for users by name in DB by matching pattern
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>GET</td>
+            <td>/api/search-places</td>
+            <td>
+              <code>
+                /?name={pattern}`
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                  &emsp; places: Array, <br />
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; places: empty Array, <br />
+                }<br>
+              </code>
+            </td>
+            <td>
+              <p>
+                Search for places by name in DB by matching pattern
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>POST</td>
+            <td>/api/add-meal</td>
+            <td>
+              <code>
+                {<br>
+                    &emsp; id: number;<br>
+                    &emsp; selected: boolean;<br>
+                    &emsp; name: string;<br>
+                    &emsp; description: string;<br>
+                    &emsp; imageUrl: string;<br>
+                    &emsp;  portions: [
+                      {<br>
+                          &emsp;&emsp; size: string;<br>
+                          &emsp;&emsp; selected: boolean;<br>
+                          &emsp;&emsp; description: string;<br>
+                          &emsp;&emsp; price: number;<br>
+                          &emsp;&emsp; weight: number;<br>
+                      }
+                    ];<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; meal: MEAL<br>
+                    &emsp; success: true,<br>
+                    &emsp; message: string,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; success: false,<br>
+                  &emsp; message: string,<br>
+                  &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Add new meal in DB
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>GET</td>
+            <td>/api/meals</td>
+            <td>
+              <code>
+                /
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; meals: Array<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; meals: empty Array<br>
+                  &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Get all meals from DB
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>GET</td>
+            <td>/api/meal/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; meal: MEAL,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: meal.id,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: meal.id,<br>
+                    &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Get meal by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>PUT</td>
+            <td>/api/meal/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+              <code>
+                {<br>
+                    &emsp; id: number;<br>
+                    &emsp; selected: boolean;<br>
+                    &emsp; name: string;<br>
+                    &emsp; description: string;<br>
+                    &emsp; imageUrl: string;<br>
+                    &emsp;  portions: [
+                      {<br>
+                          &emsp;&emsp; size: string;<br>
+                          &emsp;&emsp; selected: boolean;<br>
+                          &emsp;&emsp; description: string;<br>
+                          &emsp;&emsp; price: number;<br>
+                          &emsp;&emsp; weight: number;<br>
+                      }
+                    ];<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; meal: MEAL,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: meal.id,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: meal.id,<br>
+                    &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Update meal by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>DELETE</td>
+            <td>/api/meal/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: meal.id,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: meal.id,<br>
+                    &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Delete meal by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>POST</td>
+            <td>/api/add-place</td>
+            <td>
+              <code>
+
+                {<br>
+                    &emsp; id: number;<br>
+                    &emsp; googleId: string;<br>
+                    &emsp; name: string;<br>
+                    &emsp; email: string;<br>
+                    &emsp; phone: string;<br>
+                    &emsp; address: string;<br>
+                    &emsp; country: string;<br>
+                    &emsp; city: string;<br>
+                    &emsp; website: string;<br>
+                    &emsp; user: User;<br>
+                    &emsp; location: any = {<br>
+                        &emsp; &emsp; lat: 0,<br>
+                        &emsp; &emsp; lng: 0<br>
+                    };<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; place: PLACE<br>
+                    &emsp; success: true,<br>
+                    &emsp; message: string,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; success: false,<br>
+                  &emsp; message: string,<br>
+                  &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Add new place in DB
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>GET</td>
+            <td>/api/places</td>
+            <td>
+              <code>
+                /
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; places: Array<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; places: empty Array<br>
+                  &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Get all places from DB
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>GET</td>
+            <td>/api/places/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; place: PLACE,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: places.id,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: meal.id,<br>
+                    &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Get place by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>PUT</td>
+            <td>/api/place/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+              <code>
+                {<br>
+                    &emsp; id: number;<br>
+                    &emsp; googleId: string;<br>
+                    &emsp; name: string;<br>
+                    &emsp; email: string;<br>
+                    &emsp; phone: string;<br>
+                    &emsp; address: string;<br>
+                    &emsp; country: string;<br>
+                    &emsp; city: string;<br>
+                    &emsp; website: string;<br>
+                    &emsp; user: User;<br>
+                    &emsp; location: any = {<br>
+                        &emsp; &emsp; lat: 0,<br>
+                        &emsp; &emsp; lng: 0<br>
+                    };<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; place: PLACE,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: place.id,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: place.id,<br>
+                    &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Update place by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>DELETE</td>
+            <td>/api/place/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: place.id,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: place.id,<br>
+                    &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Delete place by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>GET</td>
+            <td>/api/users/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; users: PLACE,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: users.id,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: users.id,<br>
+                    &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Get users by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>PUT</td>
+            <td>/api/users/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+              <code>
+
+                {<br>
+                  &emsp; firstName:        {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                  &emsp; lastName:         {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                  &emsp; email:            {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                  &emsp; password:         {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                  &emsp; registrationTime: {<br>&emsp;&emsp; type: Date, default: Date.now<br>&emsp; },<br>
+                  &emsp; registrationType: String,<br>
+                  &emsp; accountType:      String,<br>
+                  &emsp; location:         Schema.Types.Mixed,<br>
+                  &emsp; map:              String<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; user: USER,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: user.id,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: user.id,<br>
+                    &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Update user by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>DELETE</td>
+            <td>/api/user/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: user.id,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: user.id,<br>
+                    &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Delete user by Id
+              </p>
+            </td>
+          </tr>
+
 
           <tr>
             <td>
