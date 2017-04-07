@@ -8,6 +8,7 @@ const fs = require('fs');
 const jsonwebtoken = require('jsonwebtoken');
 const config = require('../../config');
 const secretKey = config.secretKey;
+const nodemailer = require('nodemailer');
 
 // Methode to create token
 function createToken(user) {
@@ -177,6 +178,44 @@ module.exports = (express) => {
                 id: user._id
             });
         });
+    });
+
+    // Send mail
+    api.get('/mail', function(req, res) {
+        // create reusable transporter object using the default SMTP transport
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: config.ELPmail,
+                pass: config.ELPpass
+            }
+        });
+
+        // setup email data with unicode symbols
+        let mailOptions = {
+            from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
+            to: config.adminMails, // list of receivers
+            subject: 'Change your life 🏋️', // Subject line
+            text: 'Hello username !!! You will use the best healthy app!! ❤️', // plain text body
+            html: 'Hello username !!! <b>You will use the best healthy app!! ❤️</b>' // html body
+        };
+
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+            console.log('Message %s sent: %s', info.messageId, info.response);
+        });
+
+        res.json({
+            success: true,
+            message: "Messages sent to admins"
+        })
+    })
+
+    api.get('/me', function(req, res){
+        res.json(req.decoded);
     });
 
     return api;

@@ -26,23 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>GET</td>
-            <td>/api/users</td>
-            <td>
-              <code>
-              /
-              </code>
-            </td>
-            <td>
-              <code>
-              [{_id: ObjectID,<br> username: string,<br> email: string,<br> registrationTime: Date},<br> ...]
-              </code>
-            </td>
-            <td>
-              Returns array of all users
-            </td>
-          </tr>
+          
           <tr>
             <td>POST</td>
             <td>/api/signup</td>
@@ -50,7 +34,8 @@
               USER
               <code>
               {<br>
-                username:         {type: String, required: true},<br>
+                firstName:        {type: String, required: true},<br>
+                lastName:         {type: String, required: true},<br>
                 email:            {type: String, required: true},<br>
                 password:         {type: String, required: true},<br>
                 registrationTime: {type: Date, default: Date.now},<br>
@@ -107,6 +92,23 @@
           </tr>
 
           <tr>
+            <td>GET</td>
+            <td>/api/users</td>
+            <td>
+              <code>
+              /
+              </code>
+            </td>
+            <td>
+              <code>
+              [{_id: ObjectID,<br> username: string,<br> email: string,<br> registrationTime: Date},<br> ...]
+              </code>
+            </td>
+            <td>
+              Returns array of all users
+            </td>
+          </tr>
+          <tr>
             <td>POST</td>
             <td>/api/upload</td>
             <td>
@@ -121,6 +123,8 @@
                   message: string<br>
                 }
               </code>
+            </td>
+            <td>
             </td>
           </tr>
 
@@ -140,6 +144,47 @@
                 }
               </code>
             </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/mail</td>
+            <td>
+              <code>
+                /
+              </code>
+            </td>
+            <td>
+              <code>
+                {<br>
+                  success: boolean,<br>
+                  message: 'Messages sent to default mails'<br>
+                }
+              </code>
+            </td>
+            <td>Send default mail template to default mails (admins). TODO: create valid mail!</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/me</td>
+            <td>
+              <code>
+                /
+              </code>
+            </td>
+            <td>
+              <code>
+                {<br>
+                  id: ObjectID,<br>
+                  email: string,<br>
+                  firstName: string,<br>
+                  iat: number,<br>
+                  exp: number<br>
+                }
+              </code>
+            </td>
+            <td>Receive info about current user</td>
           </tr>
 
           <tr>
@@ -168,7 +213,7 @@
                 {<br>
                   errorMsg: 'User not found'<br />
                   userFound: false,<br>
-                  sent: false,<br>
+                  sent: false<br>
                 }<br>
               </code>
               error sending email:<br>
@@ -176,7 +221,7 @@
                 {<br>
                   errorMsg: 'error sending email'<br />
                   userFound: true,<br>
-                  sent: false,<br>
+                  sent: false<br>
                 }
               </code>
             </td>
@@ -212,7 +257,7 @@
               <code>
                 {<br>
                   message: 'email sent',<br>
-                  sent: false,<br>
+                  sent: false<br>
                 }<br>
               </code>
               error sending email:<br>
@@ -220,7 +265,7 @@
                 {<br>
                   errorMsg: 'Failed sending email',<br>
                   userFound: true,<br>
-                  sent: false,<br>
+                  sent: false<br>
                 }<br>
               </code>
             </td>
@@ -888,28 +933,18 @@
           </tr>
 
 
-          <tr>
-            <td>
-              POST
-            </td>
-            <td>
-
-            </td>
-          </tr>
-
-
         </tbody>
       </table>
     </div>
   </div>
 
-  <div>
+  <div style='padding: 30px; background-color: #d3ffce;'>
     <h2>Try with curl:</h2>
     <p><strong>GET:</strong><br>
     <code>curl http://localhost:9999/api/users</code>
     </p>
     <p><strong>POST:</strong><br>
-    <code>curl -d username=Rosty -d email=Rosty@gmail.com -d password=rosty123 http://localhost:9999/api/signup</code>
+    <code>curl -d firstName=Rosty -d lastName=MyLastname -d email=Rosty@gmail.com -d password=rosty123 http://localhost:9999/api/signup</code>
     </p>
 
     <p>

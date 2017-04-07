@@ -10,7 +10,7 @@ let UserSchema = new Schema({
   password:         {type: String, required: true, select: false},
   registrationTime: {type: Date, default: Date.now},
   registrationType: String,
-  accountType:      String,
+  accountType:      {type: String, default: 'default'},
   location:         Schema.Types.Mixed,
   image:            String
 });
