@@ -165,6 +165,51 @@
             </td>
             <td>Send default mail template to default mails (admins). TODO: create valid mail!</td>
           </tr>
+                    <tr>
+            <td>POST</td>
+            <td>/api/add-meal</td>
+            <td>
+              <code>
+                {<br>
+                    &emsp; name: string;<br>
+                    &emsp; description: string;<br>
+                    &emsp; selected: boolean;<br>
+                    &emsp; imageUrl: string;<br>
+                    &emsp;  portions: [
+                      {<br>
+                          &emsp;&emsp; size: string;<br>
+                          &emsp;&emsp; portionSelected: boolean;<br>
+                          &emsp;&emsp; portionDescription: string;<br>
+                          &emsp;&emsp; price: number;<br>
+                          &emsp;&emsp; weight: number;<br>
+                      }
+                    ];<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; meal: MEAL<br>
+                    &emsp; success: true,<br>
+                    &emsp; message: string,<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; success: false,<br>
+                  &emsp; message: string,<br>
+                  &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+                Add new meal in DB
+            </td>
+          </tr>
           <tr>
             <td>GET</td>
             <td>/api/me</td>
@@ -408,56 +453,6 @@
               </p>
             </td>
           </tr>
-
-          <tr>
-            <td>POST</td>
-            <td>/api/add-meal</td>
-            <td>
-              <code>
-                {<br>
-                    &emsp; id: number;<br>
-                    &emsp; selected: boolean;<br>
-                    &emsp; name: string;<br>
-                    &emsp; description: string;<br>
-                    &emsp; imageUrl: string;<br>
-                    &emsp;  portions: [
-                      {<br>
-                          &emsp;&emsp; size: string;<br>
-                          &emsp;&emsp; selected: boolean;<br>
-                          &emsp;&emsp; description: string;<br>
-                          &emsp;&emsp; price: number;<br>
-                          &emsp;&emsp; weight: number;<br>
-                      }
-                    ];<br>
-                }<br>
-              </code>
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; meal: MEAL<br>
-                    &emsp; success: true,<br>
-                    &emsp; message: string,<br>
-                    &emsp; token<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                  &emsp; success: false,<br>
-                  &emsp; message: string,<br>
-                  &emsp; token<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Add new meal in DB
-              </p>
-            </td>
-          </tr>
-
           <tr>
             <td>GET</td>
             <td>/api/meals</td>
@@ -897,42 +892,6 @@
             </td>
           </tr>
 
-          <tr>
-            <td>DELETE</td>
-            <td>/api/user/:id</td>
-            <td>
-              <code>
-                /{id}
-              </code>
-              <br>
-
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; success: true,<br>
-                    &emsp; id: user.id,<br>
-                    &emsp; token<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                    &emsp; success: false,<br>
-                    &emsp; id: user.id,<br>
-                    &emsp; token<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Delete user by Id
-              </p>
-            </td>
-          </tr>
-
-
         </tbody>
       </table>
     </div>
@@ -944,7 +903,8 @@
     <code>curl http://localhost:9999/api/users</code>
     </p>
     <p><strong>POST:</strong><br>
-    <code>curl -d firstName=Rosty -d lastName=MyLastname -d email=Rosty@gmail.com -d password=rosty123 http://localhost:9999/api/signup</code>
+    <code>curl -d firstName=Rosty -d lastName=MyLastname -d email=Rosty@gmail.com -d password=rosty123 http://localhost:9999/api/signup</code><br>
+    <code>curl -d name=Dish -d description="Very tasty dish" -d selected=true -d imageUrl="uploads/images/myImg.jpg" -d size=16 -d portionSelected=true -d portionDescription="My portion description" -d price=24 -d weight=36 http://localhost:9999/api/add-meal</code>
     </p>
 
     <p>

@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Upload = require('../models/upload');
+const Meal = require('../models/meal');
 const multer = require('multer');
 const upload = multer({
     dest: './uploads'
@@ -41,7 +42,7 @@ module.exports = (express) => {
               res.status(404).send({
                   success: false,
                     message: 'Ensure firstName, lastName,  password and email were provided!'
-              });
+            });
         } else {
             let user = new User({
                 firstName: req.body.firstName,
@@ -81,8 +82,8 @@ module.exports = (express) => {
             if (err) throw err;
             if (!user) {
               res.status(404).send({
-                  success: false,
-                  message: "User doesn't exist"
+                    success: false,
+                    message: "User doesn't exist"
               });
             } else if (user) {
                 let validPassword = user.comparePassword(req.body.password);
@@ -107,28 +108,28 @@ module.exports = (express) => {
     });
 
     // Middleware to verify token
-    api.use(function (req, res, next) {
-        console.log("Somebody just came to our app!");
-        let token = req.body.token || req.query.token || req.headers['x-access-token'];
-        if (token) {
-            jsonwebtoken.verify(token, secretKey, function (err, decoded) {
-                if (err) {
-                    res.status(403).send({
-                        success: false,
-                        message: "Failed to authrntificate user"
-                    });
-                } else {
-                    req.decoded = decoded;
-                    next();
-                }
-            });
-        } else {
-            res.status(403).send({
-                success: false,
-                message: "No Token Provided"
-            });
-        }
-    });
+    // api.use(function (req, res, next) {
+    //     console.log("Somebody just came to our app!");
+    //     let token = req.body.token || req.query.token || req.headers['x-access-token'];
+    //     if (token) {
+    //         jsonwebtoken.verify(token, secretKey, function (err, decoded) {
+    //             if (err) {
+    //                 res.status(403).send({
+    //                     success: false,
+    //                     message: "Failed to authrntificate user"
+    //                 });
+    //             } else {
+    //                 req.decoded = decoded;
+    //                 next();
+    //             }
+    //         });
+    //     } else {
+    //         res.status(403).send({
+    //             success: false,
+    //             message: "No Token Provided"
+    //         });
+    //     }
+    // });
 
     // Get all users
     api.get('/users', function (req, res) {
@@ -155,7 +156,7 @@ module.exports = (express) => {
             fileUpload.file.path = req.files[0].path;
             fileUpload.save((err) => {
                 if (err) {
-                    res.send(err);
+                    res.status(500).send(err);
                     return;
                 }
                 res.json({
@@ -213,6 +214,39 @@ module.exports = (express) => {
             message: "Messages sent to admins"
         })
     })
+
+    api.post('/add-meal', function (req, res) {
+
+        let meal = new Meal({
+            name: req.body.name,
+            description: req.body.description,
+            selected: req.body.selected,
+            imageUrl: req.body.imageUrl,
+            portion: [{size: req.body.size,
+                        portionSelected: req.body.portionSelected,
+                        portionDescription: req.body.portionDescription,
+                        price: req.body.price,
+                        weight: req.body.weight}]
+
+        });
+
+
+        meal.save((err) => {
+            if (err) {
+                res.status(403).send({
+                    success: false,
+                    message: "Failed to save meal to DB"
+                });
+            }
+            res.json({
+                meal: meal,
+                success: true,
+                message: `Meal "${meal.name}" was created!`,
+            });
+            res.send();
+        });
+
+    });
 
     api.get('/me', function(req, res){
         res.json(req.decoded);
