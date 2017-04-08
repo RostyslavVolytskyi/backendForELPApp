@@ -12,10 +12,16 @@ const nodemailer = require('nodemailer');
 
 // Methode to create token
 function createToken(user) {
-    var token = jsonwebtoken.sign({
+    const token = jsonwebtoken.sign({
         id: user._id,
         email: user.email,
-        firstName: user.firstName
+        firstName: user.firstName,
+        lastName: user.lastName,
+        registrationTime: user.registrationTime,
+        registrationType: user.registrationType,
+        accountType: user.accountType,
+        location: user.location,
+        image: user.image
     }, secretKey, {
         expiresIn: '1h'
     });
@@ -101,28 +107,28 @@ module.exports = (express) => {
     });
 
     // Middleware to verify token
-    // api.use(function (req, res, next) {
-    //     console.log("Somebody just came to our app!");
-    //     let token = req.body.token || req.query.token || req.headers['x-access-token'];
-    //     if (token) {
-    //         jsonwebtoken.verify(token, secretKey, function (err, decoded) {
-    //             if (err) {
-    //                 res.status(403).send({
-    //                     success: false,
-    //                     message: "Failed to authrntificate user"
-    //                 });
-    //             } else {
-    //                 req.decoded = decoded;
-    //                 next();
-    //             }
-    //         });
-    //     } else {
-    //         res.status(403).send({
-    //             success: false,
-    //             message: "No Token Provided"
-    //         });
-    //     }
-    // });
+    api.use(function (req, res, next) {
+        console.log("Somebody just came to our app!");
+        let token = req.body.token || req.query.token || req.headers['x-access-token'];
+        if (token) {
+            jsonwebtoken.verify(token, secretKey, function (err, decoded) {
+                if (err) {
+                    res.status(403).send({
+                        success: false,
+                        message: "Failed to authrntificate user"
+                    });
+                } else {
+                    req.decoded = decoded;
+                    next();
+                }
+            });
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "No Token Provided"
+            });
+        }
+    });
 
     // Get all users
     api.get('/users', function (req, res) {
