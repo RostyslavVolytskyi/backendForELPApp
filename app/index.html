@@ -133,7 +133,7 @@
             <td>/api/user/:id</td>
             <td>
               <code>
-              { _id: ObjectID }
+              /{ _id: ObjectID }
               </code>
             </td>
             <td>
@@ -208,6 +208,34 @@
             </td>
             <td>
                 Add new meal in DB
+            </td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/meal/:id</td>
+            <td>
+              <code>
+                /{ id: ObjectID }
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; mealWithUser: MEAL&&USER,<br>
+                    &emsp; success: true,<br>
+                    &emsp; message: string<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                }
+              </code>
+            </td>
+            <td>
+                Get meal by ID with user data (connection between collections 'users' and 'meals' in DB)
             </td>
           </tr>
           <tr>
@@ -483,41 +511,6 @@
               </p>
             </td>
           </tr>
-
-          <tr>
-            <td>GET</td>
-            <td>/api/meal/:id</td>
-            <td>
-              <code>
-                /{id}
-              </code>
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; meal: MEAL,<br>
-                    &emsp; success: true,<br>
-                    &emsp; id: meal.id,<br>
-                    &emsp; token<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                    &emsp; success: false,<br>
-                    &emsp; id: meal.id,<br>
-                    &emsp; token<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Get meal by Id
-              </p>
-            </td>
-          </tr>
-
           <tr>
             <td>PUT</td>
             <td>/api/meal/:id</td>
@@ -552,7 +545,6 @@
                     &emsp; meal: MEAL,<br>
                     &emsp; success: true,<br>
                     &emsp; id: meal.id,<br>
-                    &emsp; token<br>
                 }
               </code><br>
               fail:<br>
@@ -560,7 +552,6 @@
                 {<br>
                     &emsp; success: false,<br>
                     &emsp; id: meal.id,<br>
-                    &emsp; token<br>
                 }
               </code>
             </td>
@@ -587,7 +578,6 @@
                 {<br>
                     &emsp; success: true,<br>
                     &emsp; id: meal.id,<br>
-                    &emsp; token<br>
                 }
               </code><br>
               fail:<br>
@@ -595,7 +585,6 @@
                 {<br>
                     &emsp; success: false,<br>
                     &emsp; id: meal.id,<br>
-                    &emsp; token<br>
                 }
               </code>
             </td>
@@ -637,7 +626,6 @@
                     &emsp; place: PLACE<br>
                     &emsp; success: true,<br>
                     &emsp; message: string,<br>
-                    &emsp; token<br>
                 }
               </code><br>
               fail:<br>
@@ -645,7 +633,6 @@
                 {<br>
                   &emsp; success: false,<br>
                   &emsp; message: string,<br>
-                  &emsp; token<br>
                 }
               </code>
             </td>
@@ -669,14 +656,12 @@
               <code>
                 {<br>
                     &emsp; places: Array<br>
-                    &emsp; token<br>
                 }
               </code><br>
               fail:<br>
               <code>
                 {<br>
                   &emsp; places: empty Array<br>
-                  &emsp; token<br>
                 }
               </code>
             </td>
@@ -702,7 +687,6 @@
                     &emsp; place: PLACE,<br>
                     &emsp; success: true,<br>
                     &emsp; id: places.id,<br>
-                    &emsp; token<br>
                 }
               </code><br>
               fail:<br>
@@ -710,7 +694,6 @@
                 {<br>
                     &emsp; success: false,<br>
                     &emsp; id: meal.id,<br>
-                    &emsp; token<br>
                 }
               </code>
             </td>
@@ -755,7 +738,6 @@
                     &emsp; place: PLACE,<br>
                     &emsp; success: true,<br>
                     &emsp; id: place.id,<br>
-                    &emsp; token<br>
                 }
               </code><br>
               fail:<br>
@@ -763,7 +745,6 @@
                 {<br>
                     &emsp; success: false,<br>
                     &emsp; id: place.id,<br>
-                    &emsp; token<br>
                 }
               </code>
             </td>
@@ -790,7 +771,6 @@
                 {<br>
                     &emsp; success: true,<br>
                     &emsp; id: place.id,<br>
-                    &emsp; token<br>
                 }
               </code><br>
               fail:<br>
@@ -798,7 +778,6 @@
                 {<br>
                     &emsp; success: false,<br>
                     &emsp; id: place.id,<br>
-                    &emsp; token<br>
                 }
               </code>
             </td>
@@ -824,7 +803,6 @@
                     &emsp; users: PLACE,<br>
                     &emsp; success: true,<br>
                     &emsp; id: users.id,<br>
-                    &emsp; token<br>
                 }
               </code><br>
               fail:<br>
@@ -832,7 +810,6 @@
                 {<br>
                     &emsp; success: false,<br>
                     &emsp; id: users.id,<br>
-                    &emsp; token<br>
                 }
               </code>
             </td>
@@ -873,7 +850,6 @@
                     &emsp; user: USER,<br>
                     &emsp; success: true,<br>
                     &emsp; id: user.id,<br>
-                    &emsp; token<br>
                 }
               </code><br>
               fail:<br>
@@ -881,7 +857,6 @@
                 {<br>
                     &emsp; success: false,<br>
                     &emsp; id: user.id,<br>
-                    &emsp; token<br>
                 }
               </code>
             </td>

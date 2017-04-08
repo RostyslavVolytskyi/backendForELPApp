@@ -45,15 +45,15 @@ module.exports = (express) => {
             });
         } else {
             let user = new User({
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                email: req.body.email,
-                password: req.body.password,
-                registrationTime: req.body.registrationTime,
-                registrationType: req.body.registrationType,
-                accountType: req.body.accountType,
-                location: req.body.location,
-                image: req.body.image
+                firstName:          req.body.firstName,
+                lastName:           req.body.lastName,
+                email:              req.body.email,
+                password:           req.body.password,
+                registrationTime:   req.body.registrationTime,
+                registrationType:   req.body.registrationType,
+                accountType:        req.body.accountType,
+                location:           req.body.location,
+                image:              req.body.image
             });
 
             let token = createToken(user);
@@ -108,28 +108,28 @@ module.exports = (express) => {
     });
 
     // Middleware to verify token
-    // api.use(function (req, res, next) {
-    //     console.log("Somebody just came to our app!");
-    //     let token = req.body.token || req.query.token || req.headers['x-access-token'];
-    //     if (token) {
-    //         jsonwebtoken.verify(token, secretKey, function (err, decoded) {
-    //             if (err) {
-    //                 res.status(403).send({
-    //                     success: false,
-    //                     message: "Failed to authrntificate user"
-    //                 });
-    //             } else {
-    //                 req.decoded = decoded;
-    //                 next();
-    //             }
-    //         });
-    //     } else {
-    //         res.status(403).send({
-    //             success: false,
-    //             message: "No Token Provided"
-    //         });
-    //     }
-    // });
+    api.use(function (req, res, next) {
+        console.log("Somebody just came to our app!");
+        let token = req.body.token || req.query.token || req.headers['x-access-token'];
+        if (token) {
+            jsonwebtoken.verify(token, secretKey, function (err, decoded) {
+                if (err) {
+                    res.status(403).send({
+                        success: false,
+                        message: "Failed to authrntificate user"
+                    });
+                } else {
+                    req.decoded = decoded;
+                    next();
+                }
+            });
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "No Token Provided"
+            });
+        }
+    });
 
     // Get all users
     api.get('/users', function (req, res) {
@@ -215,21 +215,22 @@ module.exports = (express) => {
         })
     })
 
+    // Add meal to DB
     api.post('/add-meal', function (req, res) {
 
         let meal = new Meal({
-            name: req.body.name,
-            description: req.body.description,
-            selected: req.body.selected,
-            imageUrl: req.body.imageUrl,
-            portion: [{size: req.body.size,
-                        portionSelected: req.body.portionSelected,
-                        portionDescription: req.body.portionDescription,
-                        price: req.body.price,
-                        weight: req.body.weight}]
+            name:           req.body.name,
+            description:    req.body.description,
+            selected:       req.body.selected,
+            imageUrl:       req.body.imageUrl,
+            portion:        [{size: req.body.size,
+                                portionSelected: req.body.portionSelected,
+                                portionDescription: req.body.portionDescription,
+                                price: req.body.price,
+                                weight: req.body.weight}],
+            _creator:       req.decoded.id    // assign the _id from the user (user._id === req.decoded.id)
 
         });
-
 
         meal.save((err) => {
             if (err) {
@@ -246,6 +247,23 @@ module.exports = (express) => {
             res.send();
         });
 
+    });
+
+    // Get meal by ID with user data (connection between collections 'users' and 'meals' in DB)
+    api.get('/meal/:id', function (req, res) {
+        Meal.findById(req.params.id)
+            .populate('_creator')
+            .exec(function (err, mealWithUser) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json({
+                mealWithUser: mealWithUser,
+                success: true,
+                message: `Meal "${mealWithUser.name}" was created!`,
+            });
+        })
     });
 
     api.get('/me', function(req, res){

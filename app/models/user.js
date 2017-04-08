@@ -1,6 +1,8 @@
 let mongoose = require('mongoose');
 let bcrypt = require('bcrypt-nodejs');
 
+const Meal = require('../models/meal');
+
 let Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
@@ -12,7 +14,8 @@ let UserSchema = new Schema({
   registrationType: String,
   accountType:      {type: String, default: 'default'},
   location:         Schema.Types.Mixed,
-  image:            String
+  image:            String,
+  meals :           [{ type: Schema.Types.ObjectId, ref: 'Meal' }]
 });
 
 UserSchema.pre('save', function (next) {
