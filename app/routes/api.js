@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const Upload = require('../models/upload');
 const Meal = require('../models/meal');
+const Place = require('../models/place');
 const multer = require('multer');
 const upload = multer({
     dest: './uploads'
@@ -336,13 +337,13 @@ module.exports = (express) => {
     api.get('/meal/:id', function (req, res) {
         Meal.findById(req.params.id)
             .populate('_creator')
-            .exec(function (err, mealWithUser) {
+            .exec(function (err, meal) {
                 if (err) {
                     res.status(500).send(err);
                     return;
                 }
                 res.json({
-                    meal: mealWithUser,
+                    meal: meal,
                     success: true,
                     message: `Meal "${mealWithUser.name}" was created!`,
                 });
@@ -370,7 +371,7 @@ module.exports = (express) => {
             description: req.body.description,
             selected: req.body.selected,
             imageUrl: req.body.imageUrl,
-            portions: req.body.portions,
+            portions: req.body.portions
         }, function (err, meal) {
             if (err) {
                 res.status(500).send(err);
@@ -380,6 +381,106 @@ module.exports = (express) => {
                 meal: meal,
                 sucess: true,
                 id: meal._id
+            });
+        });
+    });
+
+    // Add place to DB
+    api.post('/add-place', function (req, res) {
+
+        let place = new Place({
+            name: req.body.name,
+            googleId: req.body.googleId,
+            email: req.body.email,
+            phone: req.body.phone,
+            address: req.body.address,
+            country: req.body.country,
+            city: req.body.city,
+            website: req.body.website,
+            location: req.body.location,
+            _creator: req.decoded.id // assign the _id from the user (user._id === req.decoded.id)
+
+        });
+
+        place.save((err) => {
+            if (err) {
+                res.status(403).send({
+                    success: false,
+                    message: "Failed to save place to DB"
+                });
+            }
+            res.json({
+                place: place,
+                success: true,
+                message: `Place "${place.name}" was created!`,
+            });
+            res.send();
+        });
+    });
+
+    // Get all places
+    api.get('/places', function (req, res) {
+        Place.find({}, function (err, places) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json(places);
+        });
+    });
+
+    // Get place by ID with user data (connection between collections 'users' and 'places' in DB)
+    api.get('/place/:id', function (req, res) {
+        Place.findById(req.params.id)
+            .populate('_creator')
+            .exec(function (err, place) {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+                res.json({
+                    place: place,
+                    success: true,
+                    message: `Place "${place.name}" was created!`,
+                });
+            })
+    });
+
+    // Delete place by ID
+    api.delete('/place/:id', function (req, res) {
+        Place.findByIdAndRemove(req.params.id, function (err, place) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json({
+                message: "Place successfully deleted",
+                id: place._id
+            });
+        });
+    });
+
+    // Update place by ID
+    api.put('/place/:id', function (req, res) {
+        Place.findByIdAndUpdate(req.params.id, {
+            name: req.body.name,
+            googleId: req.body.googleId,
+            email: req.body.email,
+            phone: req.body.phone,
+            address: req.body.address,
+            country: req.body.country,
+            city: req.body.city,
+            website: req.body.website,
+            location: req.body.location
+        }, function (err, place) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json({
+                place: place,
+                sucess: true,
+                id: place._id
             });
         });
     });

@@ -366,27 +366,6 @@
           </tr>
           <tr>
             <td>GET</td>
-            <td>/api/me</td>
-            <td>
-              <code>
-                /
-              </code>
-            </td>
-            <td>
-              <code>
-                {<br>
-                  id: ObjectID,<br>
-                  email: string,<br>
-                  firstName: string,<br>
-                  iat: number,<br>
-                  exp: number<br>
-                }
-              </code>
-            </td>
-            <td>Receive info about current user</td>
-          </tr>
-          <tr>
-            <td>GET</td>
             <td>/api/meals</td>
             <td>
               <code>
@@ -497,6 +476,219 @@
                 Delete meal by Id
               </p>
             </td>
+          </tr>
+          <tr>
+            <td>POST</td>
+            <td>/api/add-place</td>
+            <td>
+              <code>
+
+                {<br>
+                    &emsp; id: number;<br>
+                    &emsp; googleId: string;<br>
+                    &emsp; name: string;<br>
+                    &emsp; email: string;<br>
+                    &emsp; phone: string;<br>
+                    &emsp; address: string;<br>
+                    &emsp; country: string;<br>
+                    &emsp; city: string;<br>
+                    &emsp; website: string;<br>
+                    &emsp; user: User;<br>
+                    &emsp; location: any = {<br>
+                        &emsp; &emsp; lat: 0,<br>
+                        &emsp; &emsp; lng: 0<br>
+                    };<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; place: PLACE<br>
+                    &emsp; success: true,<br>
+                    &emsp; message: string,<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; success: false,<br>
+                  &emsp; message: string,<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Add new place in DB
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>GET</td>
+            <td>/api/places</td>
+            <td>
+              <code>
+                /
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; places: Array<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; places: empty Array<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Get all places from DB
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>GET</td>
+            <td>/api/places/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; place: PLACE,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: places.id,<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: meal.id,<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Get place by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>PUT</td>
+            <td>/api/place/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+              <code>
+                {<br>
+                    &emsp; id: number;<br>
+                    &emsp; googleId: string;<br>
+                    &emsp; name: string;<br>
+                    &emsp; email: string;<br>
+                    &emsp; phone: string;<br>
+                    &emsp; address: string;<br>
+                    &emsp; country: string;<br>
+                    &emsp; city: string;<br>
+                    &emsp; website: string;<br>
+                    &emsp; user: User;<br>
+                    &emsp; location: any = {<br>
+                        &emsp; &emsp; lat: 0,<br>
+                        &emsp; &emsp; lng: 0<br>
+                    };<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; place: PLACE,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: place.id,<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: place.id,<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Update place by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>DELETE</td>
+            <td>/api/place/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: place.id,<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: place.id,<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Delete place by Id
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/me</td>
+            <td>
+              <code>
+                /
+              </code>
+            </td>
+            <td>
+              <code>
+                {<br>
+                  id: ObjectID,<br>
+                  email: string,<br>
+                  firstName: string,<br>
+                  iat: number,<br>
+                  exp: number<br>
+                }
+              </code>
+            </td>
+            <td>Receive info about current user</td>
           </tr>
 
           <tr>
@@ -721,199 +913,6 @@
             </td>
           </tr>
 
-          <tr>
-            <td>POST</td>
-            <td>/api/add-place</td>
-            <td>
-              <code>
-
-                {<br>
-                    &emsp; id: number;<br>
-                    &emsp; googleId: string;<br>
-                    &emsp; name: string;<br>
-                    &emsp; email: string;<br>
-                    &emsp; phone: string;<br>
-                    &emsp; address: string;<br>
-                    &emsp; country: string;<br>
-                    &emsp; city: string;<br>
-                    &emsp; website: string;<br>
-                    &emsp; user: User;<br>
-                    &emsp; location: any = {<br>
-                        &emsp; &emsp; lat: 0,<br>
-                        &emsp; &emsp; lng: 0<br>
-                    };<br>
-                }<br>
-              </code>
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; place: PLACE<br>
-                    &emsp; success: true,<br>
-                    &emsp; message: string,<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                  &emsp; success: false,<br>
-                  &emsp; message: string,<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Add new place in DB
-              </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>GET</td>
-            <td>/api/places</td>
-            <td>
-              <code>
-                /
-              </code>
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; places: Array<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                  &emsp; places: empty Array<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Get all places from DB
-              </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>GET</td>
-            <td>/api/places/:id</td>
-            <td>
-              <code>
-                /{id}
-              </code>
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; place: PLACE,<br>
-                    &emsp; success: true,<br>
-                    &emsp; id: places.id,<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                    &emsp; success: false,<br>
-                    &emsp; id: meal.id,<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Get place by Id
-              </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>PUT</td>
-            <td>/api/place/:id</td>
-            <td>
-              <code>
-                /{id}
-              </code>
-              <br>
-              <code>
-                {<br>
-                    &emsp; id: number;<br>
-                    &emsp; googleId: string;<br>
-                    &emsp; name: string;<br>
-                    &emsp; email: string;<br>
-                    &emsp; phone: string;<br>
-                    &emsp; address: string;<br>
-                    &emsp; country: string;<br>
-                    &emsp; city: string;<br>
-                    &emsp; website: string;<br>
-                    &emsp; user: User;<br>
-                    &emsp; location: any = {<br>
-                        &emsp; &emsp; lat: 0,<br>
-                        &emsp; &emsp; lng: 0<br>
-                    };<br>
-                }<br>
-              </code>
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; place: PLACE,<br>
-                    &emsp; success: true,<br>
-                    &emsp; id: place.id,<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                    &emsp; success: false,<br>
-                    &emsp; id: place.id,<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Update place by Id
-              </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>DELETE</td>
-            <td>/api/place/:id</td>
-            <td>
-              <code>
-                /{id}
-              </code>
-              <br>
-
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; success: true,<br>
-                    &emsp; id: place.id,<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                    &emsp; success: false,<br>
-                    &emsp; id: place.id,<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Delete place by Id
-              </p>
-            </td>
-          </tr>
-
         </tbody>
       </table>
     </div>
@@ -926,7 +925,8 @@
     </p>
     <p><strong>POST:</strong><br>
     <code>curl -d firstName=Rosty -d lastName=MyLastname -d email=Rosty@gmail.com -d password=rosty123 http://localhost:9999/api/signup</code><br>
-    <code>curl -d name=Dish -d description="Very tasty dish" -d selected=true -d imageUrl="uploads/images/myImg.jpg" -d size=16 -d portionSelected=true -d portionDescription="My portion description" -d price=24 -d weight=36 http://localhost:9999/api/add-meal</code>
+    <code>curl -d name=Dish -d description="Very tasty dish" -d selected=true -d imageUrl="uploads/images/myImg.jpg" -d size=16 -d portionSelected=true -d portionDescription="My portion description" -d price=24 -d weight=36 http://localhost:9999/api/add-meal</code><br>
+    <code>curl -d name=Frankfurt -d googleId=123 -d email=place@gmail.com -d phone=123456 http://localhost:9999/api/add-place</code><br>
     </p>
 
     <p>
