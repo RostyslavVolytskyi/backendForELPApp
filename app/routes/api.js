@@ -39,21 +39,21 @@ module.exports = (express) => {
             req.body.lastName === null || req.body.lastName === '' ||
             req.body.password === null || req.body.password === '' ||
             req.body.email === null || req.body.email === '') {
-              res.status(404).send({
-                  success: false,
-                    message: 'Ensure firstName, lastName,  password and email were provided!'
+            res.status(404).send({
+                success: false,
+                message: 'Ensure firstName, lastName,  password and email were provided!'
             });
         } else {
             let user = new User({
-                firstName:          req.body.firstName,
-                lastName:           req.body.lastName,
-                email:              req.body.email,
-                password:           req.body.password,
-                registrationTime:   req.body.registrationTime,
-                registrationType:   req.body.registrationType,
-                accountType:        req.body.accountType,
-                location:           req.body.location,
-                image:              req.body.image
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                password: req.body.password,
+                registrationTime: req.body.registrationTime,
+                registrationType: req.body.registrationType,
+                accountType: req.body.accountType,
+                location: req.body.location,
+                image: req.body.image
             });
 
             let token = createToken(user);
@@ -81,10 +81,10 @@ module.exports = (express) => {
         }).select('firstName lastName registrationTime registrationType accountType location image email password').exec((err, user) => {
             if (err) throw err;
             if (!user) {
-              res.status(404).send({
+                res.status(404).send({
                     success: false,
                     message: "User doesn't exist"
-              });
+                });
             } else if (user) {
                 let validPassword = user.comparePassword(req.body.password);
                 if (!validPassword) {
@@ -181,8 +181,84 @@ module.exports = (express) => {
         });
     });
 
+    // Find user by ID
+    api.get('/user/:id', function (req, res) {
+        User.findById(req.params.id, function (err, user) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json({
+                user: user,
+                sucess: true,
+                id: user._id
+            });
+        });
+    });
+
+    // Update user by ID
+    api.put('/user/:id', function (req, res) {
+        User.findByIdAndUpdate(req.params.id, {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            registrationTime: req.body.registrationTime,
+            registrationType: req.body.registrationType,
+            accountType: req.body.accountType,
+            location: req.body.location,
+            image: req.body.image
+        }, function (err, user) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json({
+                user: user,
+                sucess: true,
+                id: user._id
+            });
+        });
+    });
+
+    api.post('/add-user', function (req, res) {
+        if (req.body.firstName === null || req.body.firstName === '' ||
+            req.body.lastName === null || req.body.lastName === '' ||
+            req.body.password === null || req.body.password === '' ||
+            req.body.email === null || req.body.email === '') {
+            res.status(404).send({
+                success: false,
+                message: 'Ensure firstName, lastName,  password and email were provided!'
+            });
+        } else {
+            let user = new User({
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                password: req.body.password,
+                registrationTime: req.body.registrationTime,
+                registrationType: req.body.registrationType,
+                accountType: req.body.accountType,
+                location: req.body.location,
+                image: req.body.image
+            });
+
+            user.save((err) => {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+                res.json({
+                    user: user.getUserData(),
+                    success: true,
+                    message: `${user.firstName} was created with email: ${user.email}!`
+                });
+                res.send();
+            });
+        }
+    });
+
     // Send mail
-    api.get('/mail', function(req, res) {
+    api.get('/mail', function (req, res) {
         // create reusable transporter object using the default SMTP transport
         let transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -219,16 +295,12 @@ module.exports = (express) => {
     api.post('/add-meal', function (req, res) {
 
         let meal = new Meal({
-            name:           req.body.name,
-            description:    req.body.description,
-            selected:       req.body.selected,
-            imageUrl:       req.body.imageUrl,
-            portion:        [{size: req.body.size,
-                                portionSelected: req.body.portionSelected,
-                                portionDescription: req.body.portionDescription,
-                                price: req.body.price,
-                                weight: req.body.weight}],
-            _creator:       req.decoded.id    // assign the _id from the user (user._id === req.decoded.id)
+            name: req.body.name,
+            description: req.body.description,
+            selected: req.body.selected,
+            imageUrl: req.body.imageUrl,
+            portions: req.body.portions,
+            _creator: req.decoded.id // assign the _id from the user (user._id === req.decoded.id)
 
         });
 
@@ -249,24 +321,70 @@ module.exports = (express) => {
 
     });
 
+    // Get all meals
+    api.get('/meals', function (req, res) {
+        Meal.find({}, function (err, meals) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json(meals);
+        });
+    });
+
     // Get meal by ID with user data (connection between collections 'users' and 'meals' in DB)
     api.get('/meal/:id', function (req, res) {
         Meal.findById(req.params.id)
             .populate('_creator')
             .exec(function (err, mealWithUser) {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+                res.json({
+                    meal: mealWithUser,
+                    success: true,
+                    message: `Meal "${mealWithUser.name}" was created!`,
+                });
+            })
+    });
+
+    // Delete meal by ID
+    api.delete('/meal/:id', function (req, res) {
+        Meal.findByIdAndRemove(req.params.id, function (err, meal) {
             if (err) {
                 res.status(500).send(err);
                 return;
             }
             res.json({
-                mealWithUser: mealWithUser,
-                success: true,
-                message: `Meal "${mealWithUser.name}" was created!`,
+                message: "Meal successfully deleted",
+                id: meal._id
             });
-        })
+        });
     });
 
-    api.get('/me', function(req, res){
+    // Update meal by ID
+    api.put('/meal/:id', function (req, res) {
+        Meal.findByIdAndUpdate(req.params.id, {
+            name: req.body.name,
+            description: req.body.description,
+            selected: req.body.selected,
+            imageUrl: req.body.imageUrl,
+            portions: req.body.portions,
+        }, function (err, meal) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json({
+                meal: meal,
+                sucess: true,
+                id: meal._id
+            });
+        });
+    });
+
+    api.get('/me', function (req, res) {
         res.json(req.decoded);
     });
 

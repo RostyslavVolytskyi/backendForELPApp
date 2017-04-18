@@ -26,7 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          
+
           <tr>
             <td>POST</td>
             <td>/api/signup</td>
@@ -147,6 +147,132 @@
             <td>
             </td>
           </tr>
+
+          <tr>
+            <td>GET</td>
+            <td>/api/user/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; user: USER,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: user.id,<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: user.id,<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Get user by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>PUT</td>
+            <td>/api/user/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+              <code>
+              {<br>
+                &emsp; firstName:        {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                &emsp; lastName:         {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                &emsp; email:            {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                &emsp; password:         {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                &emsp; registrationTime: {<br>&emsp;&emsp; type: Date, default: Date.now<br>&emsp; },<br>
+                &emsp; registrationType: String,<br>
+                &emsp; accountType:      String,<br>
+                &emsp; location:         Schema.Types.Mixed,<br>
+                &emsp; map:              String<br>
+              }
+              </code>
+
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; user: USER,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: user.id,<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: user.id,<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Add new user
+              </p>
+            </td>
+          </tr>
+
+
+          <tr>
+            <td>POST</td>
+            <td>/api/add-user</td>
+            <td>
+
+              <br>
+              <code>
+
+                {<br>
+                  &emsp; firstName:        {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                  &emsp; lastName:         {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                  &emsp; email:            {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                  &emsp; password:         {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
+                  &emsp; registrationTime: {<br>&emsp;&emsp; type: Date, default: Date.now<br>&emsp; },<br>
+                  &emsp; registrationType: String,<br>
+                  &emsp; accountType:      String,<br>
+                  &emsp; location:         Schema.Types.Mixed,<br>
+                  &emsp; map:              String<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; user: USER,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: user.id,<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: user.id,<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Update user by Id
+              </p>
+            </td>
+          </tr>
+
           <tr>
             <td>GET</td>
             <td>/api/mail</td>
@@ -165,7 +291,7 @@
             </td>
             <td>Send default mail template to default mails (admins). TODO: create valid mail!</td>
           </tr>
-                    <tr>
+          <tr>
             <td>POST</td>
             <td>/api/add-meal</td>
             <td>
@@ -222,7 +348,7 @@
               success:<br>
               <code>
                 {<br>
-                    &emsp; mealWithUser: MEAL&&USER,<br>
+                    &emsp; meal: MEAL&&USER,<br>
                     &emsp; success: true,<br>
                     &emsp; message: string<br>
                 }
@@ -258,6 +384,119 @@
               </code>
             </td>
             <td>Receive info about current user</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/meals</td>
+            <td>
+              <code>
+                /
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; meals: Array<br>
+                    &emsp; token<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; meals: empty Array<br>
+                  &emsp; token<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Get all meals from DB
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>PUT</td>
+            <td>/api/meal/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+              <code>
+                {<br>
+                    &emsp; id: number;<br>
+                    &emsp; selected: boolean;<br>
+                    &emsp; name: string;<br>
+                    &emsp; description: string;<br>
+                    &emsp; imageUrl: string;<br>
+                    &emsp;  portions: [
+                      {<br>
+                          &emsp;&emsp; size: string;<br>
+                          &emsp;&emsp; selected: boolean;<br>
+                          &emsp;&emsp; description: string;<br>
+                          &emsp;&emsp; price: number;<br>
+                          &emsp;&emsp; weight: number;<br>
+                      }
+                    ];<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; meal: MEAL,<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: meal.id,<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: meal.id,<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Update meal by Id
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>DELETE</td>
+            <td>/api/meal/:id</td>
+            <td>
+              <code>
+                /{id}
+              </code>
+              <br>
+
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; success: true,<br>
+                    &emsp; id: meal.id,<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                    &emsp; id: meal.id,<br>
+                }
+              </code>
+            </td>
+            <td>
+              <p>
+                Delete meal by Id
+              </p>
+            </td>
           </tr>
 
           <tr>
@@ -481,119 +720,6 @@
               </p>
             </td>
           </tr>
-          <tr>
-            <td>GET</td>
-            <td>/api/meals</td>
-            <td>
-              <code>
-                /
-              </code>
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; meals: Array<br>
-                    &emsp; token<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                  &emsp; meals: empty Array<br>
-                  &emsp; token<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Get all meals from DB
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td>PUT</td>
-            <td>/api/meal/:id</td>
-            <td>
-              <code>
-                /{id}
-              </code>
-              <br>
-              <code>
-                {<br>
-                    &emsp; id: number;<br>
-                    &emsp; selected: boolean;<br>
-                    &emsp; name: string;<br>
-                    &emsp; description: string;<br>
-                    &emsp; imageUrl: string;<br>
-                    &emsp;  portions: [
-                      {<br>
-                          &emsp;&emsp; size: string;<br>
-                          &emsp;&emsp; selected: boolean;<br>
-                          &emsp;&emsp; description: string;<br>
-                          &emsp;&emsp; price: number;<br>
-                          &emsp;&emsp; weight: number;<br>
-                      }
-                    ];<br>
-                }<br>
-              </code>
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; meal: MEAL,<br>
-                    &emsp; success: true,<br>
-                    &emsp; id: meal.id,<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                    &emsp; success: false,<br>
-                    &emsp; id: meal.id,<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Update meal by Id
-              </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>DELETE</td>
-            <td>/api/meal/:id</td>
-            <td>
-              <code>
-                /{id}
-              </code>
-              <br>
-
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; success: true,<br>
-                    &emsp; id: meal.id,<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                    &emsp; success: false,<br>
-                    &emsp; id: meal.id,<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Delete meal by Id
-              </p>
-            </td>
-          </tr>
 
           <tr>
             <td>POST</td>
@@ -784,85 +910,6 @@
             <td>
               <p>
                 Delete place by Id
-              </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>GET</td>
-            <td>/api/users/:id</td>
-            <td>
-              <code>
-                /{id}
-              </code>
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; users: PLACE,<br>
-                    &emsp; success: true,<br>
-                    &emsp; id: users.id,<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                    &emsp; success: false,<br>
-                    &emsp; id: users.id,<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Get users by Id
-              </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>PUT</td>
-            <td>/api/users/:id</td>
-            <td>
-              <code>
-                /{id}
-              </code>
-              <br>
-              <code>
-
-                {<br>
-                  &emsp; firstName:        {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
-                  &emsp; lastName:         {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
-                  &emsp; email:            {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
-                  &emsp; password:         {<br>&emsp;&emsp; type: String, required: true<br>&emsp; },<br>
-                  &emsp; registrationTime: {<br>&emsp;&emsp; type: Date, default: Date.now<br>&emsp; },<br>
-                  &emsp; registrationType: String,<br>
-                  &emsp; accountType:      String,<br>
-                  &emsp; location:         Schema.Types.Mixed,<br>
-                  &emsp; map:              String<br>
-                }<br>
-              </code>
-            </td>
-            <td>
-              success:<br>
-              <code>
-                {<br>
-                    &emsp; user: USER,<br>
-                    &emsp; success: true,<br>
-                    &emsp; id: user.id,<br>
-                }
-              </code><br>
-              fail:<br>
-              <code>
-                {<br>
-                    &emsp; success: false,<br>
-                    &emsp; id: user.id,<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-                Update user by Id
               </p>
             </td>
           </tr>
