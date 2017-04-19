@@ -415,15 +415,20 @@ module.exports = (express) => {
     api.post('/add-place', function (req, res) {
 
         let place = new Place({
-            name: req.body.name,
-            googleId: req.body.googleId,
-            email: req.body.email,
-            phone: req.body.phone,
-            address: req.body.address,
-            country: req.body.country,
-            city: req.body.city,
-            website: req.body.website,
-            location: req.body.location,
+            name:               req.body.name,
+            googleId:           req.body.googleId,
+            email:              req.body.email,
+            phone:              req.body.phone,
+            fullAddress:        req.body.fullAddress,
+            website:            req.body.website,
+            currency:           req.body.currency,
+            elp_opening_hours:  req.body.elp_opening_hours,
+            location:           req.body.location,
+            mealIds:            [req.body.mealIds],
+            deliveryAvailable:  req.body.deliveryAvailable,
+            takeAwayAvailable:  req.body.takeAwayAvailable,
+            paymentOptions:     req.body.paymentOptions,
+            rating:             req.body.rating,
             _creator: req.decoded.id // assign the _id from the user (user._id === req.decoded.id)
 
         });
@@ -458,7 +463,7 @@ module.exports = (express) => {
     // Find places by Name (regex pattern)
     api.get('/search-places/', function (req, res) {
         const rgxp = new RegExp(req.query.name, "i");
-        Meal.find({name: rgxp }, function (err, meals) {
+        Place.find({name: rgxp }, function (err, meals) {
             if (err) {
                 res.status(500).send(err);
                 return;
@@ -501,15 +506,20 @@ module.exports = (express) => {
     // Update place by ID
     api.put('/place/:id', function (req, res) {
         Place.findByIdAndUpdate(req.params.id, {
-            name: req.body.name,
-            googleId: req.body.googleId,
-            email: req.body.email,
-            phone: req.body.phone,
-            address: req.body.address,
-            country: req.body.country,
-            city: req.body.city,
-            website: req.body.website,
-            location: req.body.location
+            name:               req.body.name,
+            googleId:           req.body.googleId,
+            email:              req.body.email,
+            phone:              req.body.phone,
+            fullAddress:        req.body.fullAddress,
+            website:            req.body.website,
+            currency:           req.body.currency,
+            elp_opening_hours:  req.body.elp_opening_hours,
+            location:           req.body.location,
+            mealIds:            [req.body.mealIds],
+            deliveryAvailable:  req.body.deliveryAvailable,
+            takeAwayAvailable:  req.body.takeAwayAvailable,
+            paymentOptions:     req.body.paymentOptions,
+            rating:             req.body.rating
         }, function (err, place) {
             if (err) {
                 res.status(500).send(err);

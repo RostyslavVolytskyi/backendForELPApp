@@ -3,23 +3,57 @@ const User = require('../models/user');
 
 let Schema = mongoose.Schema;
 
-let PlaceSchema = new Schema({
+const CurrencySchema = new Schema({
+    name: String,
+    postfix: String
+});
+
+const ElpOpeningHours = new Schema({
+    break: {
+        from:           String,
+        fromMin:        String,
+        to:             String,
+        toMin:          String
+    },
+    business_hours: {
+        from:           String,
+        fromMin:        String,
+        to:             String,
+        toMin:          String
+    },
+    hasBreak:           Boolean,
+    name:               String,
+    selected:           Boolean
+});
+
+const PaymentOptions = new Schema({
+    image:              String,
+    name:               String,
+    selected:           String
+});
+
+const PlaceSchema = new Schema({
     _creator: {
-        type:       Schema.Types.ObjectId,
-        ref:        'User'
+        type:           Schema.Types.ObjectId,
+        ref:            'User'
     },
     name: {
-        type:       String,
-        required:   true
+        type:           String,
+        required:       true
     },
-    googleId:       String,
-    email:          String,
-    phone:          String,
-    address:        String,
-    country:        String,
-    city:           String,
-    website:        String,
-    location:       Schema.Types.Mixed,
+    googleId:           String,
+    email:              String,
+    phone:              String,
+    fullAddress:        String,
+    website:            String,
+    currency:           Schema.Types.Mixed,
+    elp_opening_hours:  [ElpOpeningHours],
+    location:           CurrencySchema,
+    mealIds:            [String],
+    deliveryAvailable:  Boolean,
+    takeAwayAvailable:  Boolean,
+    paymentOptions:     [PaymentOptions],
+    rating:             Number
 });
 
 module.exports = mongoose.model('Place', PlaceSchema);
