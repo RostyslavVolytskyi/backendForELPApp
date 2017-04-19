@@ -132,17 +132,6 @@ module.exports = (express) => {
         }
     });
 
-    // Get all users
-    api.get('/users', function (req, res) {
-        User.find({}, function (err, users) {
-            if (err) {
-                res.status(500).send(err);
-                return;
-            }
-            res.json(users);
-        });
-    });
-
     // Upload a file
     api.post('/upload', function (req, res) {
         upload(req, res, function (err) {
@@ -166,7 +155,30 @@ module.exports = (express) => {
                 });
             });
         })
-    })
+    });
+
+    // Get all users
+    api.get('/users', function (req, res) {
+        User.find({}, function (err, users) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json(users);
+        });
+    });
+
+    // Find users by Name (regex pattern)
+    api.get('/search-users/', function (req, res) {
+        const rgxp = new RegExp(req.query.name, "i");
+        Meal.find({name: rgxp }, function (err, meals) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json(meals);
+        });
+    });
 
     // Delete user by ID
     api.delete('/user/:id', function (req, res) {
@@ -333,6 +345,18 @@ module.exports = (express) => {
         });
     });
 
+    // Find meals by Name (regex pattern)
+    api.get('/search-meals/', function (req, res) {
+        const rgxp = new RegExp(req.query.name, "i");
+        Meal.find({name: rgxp }, function (err, meals) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json(meals);
+        });
+    });
+
     // Get meal by ID with user data (connection between collections 'users' and 'meals' in DB)
     api.get('/meal/:id', function (req, res) {
         Meal.findById(req.params.id)
@@ -345,7 +369,7 @@ module.exports = (express) => {
                 res.json({
                     meal: meal,
                     success: true,
-                    message: `Meal "${mealWithUser.name}" was created!`,
+                    message: `Meal "${meal.name}" was get!`,
                 });
             })
     });
@@ -429,6 +453,18 @@ module.exports = (express) => {
         });
     });
 
+    // Find places by Name (regex pattern)
+    api.get('/search-places/', function (req, res) {
+        const rgxp = new RegExp(req.query.name, "i");
+        Meal.find({name: rgxp }, function (err, meals) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json(meals);
+        });
+    });
+
     // Get place by ID with user data (connection between collections 'users' and 'places' in DB)
     api.get('/place/:id', function (req, res) {
         Place.findById(req.params.id)
@@ -441,7 +477,7 @@ module.exports = (express) => {
                 res.json({
                     place: place,
                     success: true,
-                    message: `Place "${place.name}" was created!`,
+                    message: `Place "${place.name}" was get!`,
                 });
             })
     });
