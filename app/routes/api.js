@@ -173,7 +173,7 @@ module.exports = (express) => {
     // Find users by Name (regex pattern)
     api.get('/search-users/', function (req, res) {
         const rgxp = new RegExp(req.query.name, "i");
-        Meal.find({name: rgxp }, function (err, meals) {
+        User.find({firstName: rgxp}, function (err, meals) {
             if (err) {
                 res.status(500).send(err);
                 return;
