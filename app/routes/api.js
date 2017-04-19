@@ -150,6 +150,8 @@ module.exports = (express) => {
                     return;
                 }
                 res.json({
+                    path: fileUpload.file.path,
+                    contentType: fileUpload.file.contentType,
                     success: true,
                     message: `File saved to DB`
                 });
