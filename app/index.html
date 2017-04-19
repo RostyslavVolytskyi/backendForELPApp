@@ -272,6 +272,34 @@
               </p>
             </td>
           </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/search-users</td>
+            <td>
+              <code>
+                /?name={pattern}`
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                &emsp;  users: Array, <br />
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; users: empty Array, <br />
+                }<br>
+              </code>
+            </td>
+            <td>
+              <p>
+                Search for users by name in DB by matching pattern
+              </p>
+            </td>
+          </tr>
 
           <tr>
             <td>GET</td>
@@ -334,6 +362,34 @@
             </td>
             <td>
                 Add new meal in DB
+            </td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/search-meals</td>
+            <td>
+              <code>
+                /?name={pattern}`
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                  &emsp; meals: Array, <br />
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; meals: empty Array, <br />
+                }<br>
+              </code>
+            </td>
+            <td>
+              <p>
+                Search for meals by name in DB by matching pattern
+              </p>
             </td>
           </tr>
           <tr>
@@ -521,6 +577,34 @@
             <td>
               <p>
                 Add new place in DB
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/search-places</td>
+            <td>
+              <code>
+                /?name={pattern}`
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                  &emsp; places: Array, <br />
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; places: empty Array, <br />
+                }<br>
+              </code>
+            </td>
+            <td>
+              <p>
+                Search for places by name in DB by matching pattern
               </p>
             </td>
           </tr>
@@ -826,93 +910,7 @@
               </p>
             </td>
           </tr>
-          <tr>
-            <td>GET</td>
-            <td>/api/search-meals</td>
-            <td>
-              <code>
-                /?name={pattern}`
-              </code>
-            </td>
-            <td>
-              sucess:<br>
-              <code>
-                {<br>
-                  &emsp; meals: Array, <br />
-                }<br>
-              </code>
-              fail:<br>
-              <code>
-                {<br>
-                  &emsp; meals: empty Array, <br />
-                }<br>
-              </code>
-            </td>
-            <td>
-              <p>
-                Search for meals by name in DB by matching pattern
-              </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>GET</td>
-            <td>/api/search-users</td>
-            <td>
-              <code>
-                /?name={pattern}`
-              </code>
-            </td>
-            <td>
-              sucess:<br>
-              <code>
-                {<br>
-                &emsp;  users: Array, <br />
-                }<br>
-              </code>
-              fail:<br>
-              <code>
-                {<br>
-                  &emsp; users: empty Array, <br />
-                }<br>
-              </code>
-            </td>
-            <td>
-              <p>
-                Search for users by name in DB by matching pattern
-              </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>GET</td>
-            <td>/api/search-places</td>
-            <td>
-              <code>
-                /?name={pattern}`
-              </code>
-            </td>
-            <td>
-              sucess:<br>
-              <code>
-                {<br>
-                  &emsp; places: Array, <br />
-                }<br>
-              </code>
-              fail:<br>
-              <code>
-                {<br>
-                  &emsp; places: empty Array, <br />
-                }<br>
-              </code>
-            </td>
-            <td>
-              <p>
-                Search for places by name in DB by matching pattern
-              </p>
-            </td>
-          </tr>
-
+          
         </tbody>
       </table>
     </div>
