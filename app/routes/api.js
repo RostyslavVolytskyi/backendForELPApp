@@ -506,6 +506,15 @@ module.exports = (express) => {
             })
     });
 
+    api.get('/meals-by-ids/:ids', function (req, res) {
+      // TODO
+      res.json({
+          meals: [],
+          success: true,
+          message: `TODO`,
+      });
+    });
+
     // Delete meal by ID
     api.delete('/meal/:id', function (req, res) {
         Meal.findByIdAndRemove(req.params.id, function (err, meal) {
@@ -552,14 +561,14 @@ module.exports = (express) => {
             fullAddress:        req.body.fullAddress,
             website:            req.body.website,
             currency:           req.body.currency,
-            elp_opening_hours:  req.body.elp_opening_hours,
+            elpOpeningHours:    req.body.elpOpeningHours,
             location:           req.body.location,
-            mealIds:            [req.body.mealIds],
+            mealIds:            req.body.mealIds,
             deliveryAvailable:  req.body.deliveryAvailable,
             takeAwayAvailable:  req.body.takeAwayAvailable,
             paymentOptions:     req.body.paymentOptions,
             rating:             req.body.rating,
-            _creator: req.decoded.id // assign the _id from the user (user._id === req.decoded.id)
+            _creator:           req.decoded.id // assign the _id from the user (user._id === req.decoded.id)
 
         });
 
@@ -643,7 +652,7 @@ module.exports = (express) => {
             fullAddress:        req.body.fullAddress,
             website:            req.body.website,
             currency:           req.body.currency,
-            elp_opening_hours:  req.body.elp_opening_hours,
+            elpOpeningHours:    req.body.elpOpeningHours,
             location:           req.body.location,
             mealIds:            [req.body.mealIds],
             deliveryAvailable:  req.body.deliveryAvailable,

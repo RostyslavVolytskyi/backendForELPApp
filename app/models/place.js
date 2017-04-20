@@ -29,7 +29,7 @@ const ElpOpeningHours = new Schema({
 const PaymentOptions = new Schema({
     image:              String,
     name:               String,
-    selected:           String
+    selected:           Boolean
 });
 
 const PlaceSchema = new Schema({
@@ -46,9 +46,9 @@ const PlaceSchema = new Schema({
     phone:              String,
     fullAddress:        String,
     website:            String,
-    currency:           Schema.Types.Mixed,
-    elp_opening_hours:  [ElpOpeningHours],
-    location:           CurrencySchema,
+    currency:           CurrencySchema,
+    elpOpeningHours:  [ElpOpeningHours],
+    location:           Schema.Types.Mixed,
     mealIds:            [String],
     deliveryAvailable:  Boolean,
     takeAwayAvailable:  Boolean,
