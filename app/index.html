@@ -88,6 +88,42 @@
           </tr>
 
           <tr>
+            <td>POST</td>
+            <td>/api/send-email</td>
+            <td>
+              <code>
+                {<br>
+                    &emsp; date: Date,<br>
+                    &emsp; fullName: string,<br>
+                    &emsp; ip: string,<br>
+                    &emsp; email: string,<br>
+                    &emsp; message: string<br>
+                }
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                  &emsp; massage: 'email sent', <br />
+                  &emsp; sent: true <br>
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  &emsp; mesage: 'email not sent', <br />
+                  &emsp; sent: false,<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+                Store received email in DB;
+                Send all admin users a notification email
+            </td>
+          </tr>
+
+          <tr>
             <td colspan=5 style='background-color: #008080; font-weight: 700;'>Next requests should be made with token!</td>
           </tr>
 
@@ -873,43 +909,6 @@
               </div>
             </td>
           </tr>
-          <tr>
-            <td>POST</td>
-            <td>/api/send-email</td>
-            <td>
-              <code>
-                {<br>
-                    &emsp; date: Date,<br>
-                    &emsp; fullName: string,<br>
-                    &emsp; ip: string,<br>
-                    &emsp; email: string,<br>
-                    &emsp; message: string<br>
-                }
-              </code>
-            </td>
-            <td>
-              sucess:<br>
-              <code>
-                {<br>
-                  &emsp; massage: 'email sent', <br />
-                  &emsp; sent: true <br>
-                }<br>
-              </code>
-              fail:<br>
-              <code>
-                {<br>
-                  &emsp; mesage: 'email not sent', <br />
-                  &emsp; sent: false,<br>
-                }<br>
-              </code>
-            </td>
-            <td>
-              <p>
-                Store received email in DB;
-                Send all admin users a notification email
-              </p>
-            </td>
-          </tr>
           
         </tbody>
       </table>
@@ -925,6 +924,7 @@
     <code>curl -d firstName=Rosty -d lastName=MyLastname -d email=Rosty@gmail.com -d password=rosty123 http://localhost:9999/api/signup</code><br>
     <code>curl -d name=Dish -d description="Very tasty dish" -d selected=true -d imageUrl="uploads/images/myImg.jpg" -d size=16 -d portionSelected=true -d portionDescription="My portion description" -d price=24 -d weight=36 http://localhost:9999/api/add-meal</code><br>
     <code>curl -d name=Frankfurt -d googleId=123 -d email=place@gmail.com -d phone=123456 http://localhost:9999/api/add-place</code><br>
+    <code>curl -d fullName="Lubov Ivanivna" -d email=lubo4ka@gmail.com -d message="My test message" http://localhost:9999/api/send-email</code>
     </p>
 
     <p>

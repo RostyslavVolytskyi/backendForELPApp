@@ -2,6 +2,8 @@ const User = require('../models/user');
 const Upload = require('../models/upload');
 const Meal = require('../models/meal');
 const Place = require('../models/place');
+const Contact = require('../models/contact');
+
 const multer = require('multer');
 const upload = multer({
     dest: './uploads'
@@ -107,6 +109,69 @@ module.exports = (express) => {
             }
         });
     });
+
+    // Send email from contact form
+    api.post('/send-email', function (req, res) {
+
+        if (req.body.fullName === null || req.body.fullName === '' ||
+            req.body.email === null || req.body.email === '' ||
+            req.body.message === null || req.body.message === '') {
+            res.status(404).send({
+                success: false,
+                message: 'Ensure full name, email, and message were provided!'
+            });
+        } else {
+            let contact = new Contact({
+                fullName: req.body.fullName,
+                email: req.body.email,
+                message: req.body.message,
+                date: req.body.date,
+                ip: req.body.ip
+            });
+
+            contact.save((err) => {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+
+                // create reusable transporter object using the default SMTP transport
+                let transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: config.ELPmail,
+                        pass: config.ELPpass
+                    }
+                });
+
+                // setup email data with unicode symbols
+                let mailOptions = {
+                    from: `"${contact.fullName} 👦🏼" <eatlikeprofessional@gmail.com>`, // sender address
+                    to: config.adminMails, // list of receivers
+                    subject: `Notification from user ❗️`, // Subject line
+                    text: `Hello admin !!! ${contact.message}. Please reply me on ${contact.email}`, // plain text body
+                    html: `Hello admin !!! <p>${contact.message}</p><br><b>Please reply me on ${contact.email}</b>` // html body
+                };
+
+                // send mail with defined transport object
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        return console.log(error);
+                    }
+                    console.log('Message %s sent: %s', info.messageId, info.response);
+                });
+
+                res.json({
+                    contact: contact,
+                    success: true,
+                    message: `Messages sent to admins! Contact form: ${contact.email} with user full name: "${contact.fullName}" was saved to DB!`
+                });
+                res.send();
+            });
+        }
+
+
+    })
 
     // Middleware to verify token
     api.use(function (req, res, next) {
