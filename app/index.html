@@ -134,7 +134,7 @@
                 {<br>
                   date: DateTime,<br>
                   email: string,<br>
-                  ip: number<br>
+                  ip: string<br>
                   route: string<br>
                 }
               </code>
@@ -837,6 +837,28 @@
               <p>
                 Delete place by Id
               </p>
+            </td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/user-places</td>
+            <td>
+              <code>
+                /
+              </code>
+              <br>
+
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    places: Places<br>
+                }
+              </code>
+            </td>
+            <td>
+                Get places by User ID
             </td>
           </tr>
           <tr>

@@ -45,7 +45,7 @@ module.exports = (express) => {
             req.body.email === null || req.body.email === '') {
             res.status(404).send({
                 success: false,
-                message: 'Ensure firstName, lastName,  password and email were provided!'
+                message: 'Ensure firstName, lastName, password and email were provided!'
             });
         } else {
             let user = new User({
@@ -177,7 +177,9 @@ module.exports = (express) => {
 
         let quickEmail = new QuickEmail({
             email: req.body.email,
-            date: req.body.date
+            date: req.body.date,
+            ip: req.body.ip,
+            route: req.body.route
         });
 
         quickEmail.save((err) => {
@@ -673,6 +675,17 @@ module.exports = (express) => {
                 sucess: true,
                 id: place._id
             });
+        });
+    });
+
+    // Get places by User ID
+    api.get('/user-places', function (req, res) {
+        Place.find({_creator: req.decoded.id }, function (err, places) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json(places);
         });
     });
 
