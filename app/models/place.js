@@ -47,12 +47,13 @@ const PlaceSchema = new Schema({
     fullAddress:        String,
     website:            String,
     currency:           CurrencySchema,
-    elpOpeningHours:  [ElpOpeningHours],
+    elpOpeningHours:    [ElpOpeningHours],
     location:           Schema.Types.Mixed,
     mealIds:            [String],
     deliveryAvailable:  Boolean,
     takeAwayAvailable:  Boolean,
     paymentOptions:     [PaymentOptions],
+    date:               {type: Date, default: Date.now},
     rating:             Number
 });
 

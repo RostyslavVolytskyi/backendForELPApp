@@ -35,7 +35,8 @@ let MealSchema = new Schema({
         default: false
     },
     imageUrl: String,
-    portions: [PortionSchema]
+    portions: [PortionSchema],
+    date:     {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('Meal', MealSchema);

@@ -303,12 +303,12 @@ module.exports = (express) => {
     // Find users by Name (regex pattern)
     api.get('/search-users/', function (req, res) {
         const rgxp = new RegExp(req.query.name, "i");
-        User.find({firstName: rgxp}, function (err, meals) {
+        User.find({firstName: rgxp}, function (err, users) {
             if (err) {
                 res.status(500).send(err);
                 return;
             }
-            res.json(meals);
+            res.json(users);
         });
     });
 
@@ -445,6 +445,7 @@ module.exports = (express) => {
             selected: req.body.selected,
             imageUrl: req.body.imageUrl,
             portions: req.body.portions,
+            date:     req.body.date,
             _creator: req.decoded.id // assign the _id from the user (user._id === req.decoded.id)
 
         });
@@ -536,7 +537,8 @@ module.exports = (express) => {
             description: req.body.description,
             selected: req.body.selected,
             imageUrl: req.body.imageUrl,
-            portions: req.body.portions
+            portions: req.body.portions,
+            date:     req.body.date,
         }, function (err, meal) {
             if (err) {
                 res.status(500).send(err);
@@ -568,6 +570,7 @@ module.exports = (express) => {
             takeAwayAvailable:  req.body.takeAwayAvailable,
             paymentOptions:     req.body.paymentOptions,
             rating:             req.body.rating,
+            date:               req.body.date,
             _creator:           req.decoded.id // assign the _id from the user (user._id === req.decoded.id)
 
         });
@@ -602,12 +605,12 @@ module.exports = (express) => {
     // Find places by Name (regex pattern)
     api.get('/search-places/', function (req, res) {
         const rgxp = new RegExp(req.query.name, "i");
-        Place.find({name: rgxp }, function (err, meals) {
+        Place.find({name: rgxp }, function (err, places) {
             if (err) {
                 res.status(500).send(err);
                 return;
             }
-            res.json(meals);
+            res.json(places);
         });
     });
 
@@ -658,7 +661,8 @@ module.exports = (express) => {
             deliveryAvailable:  req.body.deliveryAvailable,
             takeAwayAvailable:  req.body.takeAwayAvailable,
             paymentOptions:     req.body.paymentOptions,
-            rating:             req.body.rating
+            rating:             req.body.rating,
+            date:               req.body.date
         }, function (err, place) {
             if (err) {
                 res.status(500).send(err);
