@@ -3,6 +3,7 @@ const Upload = require('../models/upload');
 const Meal = require('../models/meal');
 const Place = require('../models/place');
 const Contact = require('../models/contact');
+const QuickEmail = require('../models/quickEmail');
 
 const multer = require('multer');
 const upload = multer({
@@ -169,8 +170,72 @@ module.exports = (express) => {
                 res.send();
             });
         }
+    });
 
+    // Send quick email
+    api.post('/quick-email', function (req, res) {
 
+        let quickEmail = new QuickEmail({
+            email: req.body.email,
+            date: req.body.date
+        });
+
+        quickEmail.save((err) => {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+
+            // create reusable transporter object using the default SMTP transport
+            let transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: config.ELPmail,
+                    pass: config.ELPpass
+                }
+            });
+
+            // setup email data with unicode symbols
+            let mailOptions = {
+                from: `"Anonymys 👦🏼" <eatlikeprofessional@gmail.com>`, // sender address
+                to: config.adminMails, // list of receivers
+                subject: `Notification from "Anonymys" user ❗️`, // Subject line
+                text: `Hello admin !!! Please contact me on ${quickEmail.email}`, // plain text body
+                html: `Hello admin !!! <br><b>Please contact me on ${quickEmail.email}</b>` // html body
+            };
+
+            // send mail with defined transport object
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    return console.log(error);
+                }
+                console.log('Message %s sent: %s', info.messageId, info.response);
+            });
+
+                        // setup email data with unicode symbols
+            let mailOptionsBack = {
+                from: `"ELP 💪" <eatlikeprofessional@gmail.com>`, // sender address
+                to: `${quickEmail.email}`, // receiver
+                subject: `ELP feedback`, // Subject line
+                text: `Hello User 😉 !!! Thank you for your request. We will contact you within next 3 hours.`, // plain text body
+                html: `Hello User 😉 !!! <p>Thank you for your request. We will contact you within next 3 hours.</p>` // html body
+            };
+
+            // send mail with defined transport object
+            transporter.sendMail(mailOptionsBack, (error, info) => {
+                if (error) {
+                    return console.log(error);
+                }
+                console.log('Message %s sent: %s', info.messageId, info.response);
+            });
+
+            res.json({
+                quickEmail: quickEmail,
+                success: true,
+                message: `Messages sent to admins with feedback! Quick email form: ${quickEmail.email} was saved to DB!`
+            });
+            res.send();
+        });
     })
 
     // Middleware to verify token

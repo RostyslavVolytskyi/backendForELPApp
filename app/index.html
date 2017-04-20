@@ -122,6 +122,56 @@
                 Send all admin users a notification email
             </td>
           </tr>
+          <tr>
+            <td>
+              POST
+            </td>
+            <td>
+              /api/quick-email
+            </td>
+            <td>
+              <code>
+                {<br>
+                  date: DateTime,<br>
+                  email: string,<br>
+                  ip: number<br>
+                  route: string<br>
+                }
+              </code>
+            </td>
+            <td>
+              sucess:<br>
+              <code>
+                {<br>
+                  message: 'email sent',<br>
+                  sent: false<br>
+                }<br>
+              </code>
+              error sending email:<br>
+              <code>
+                {<br>
+                  errorMsg: 'Failed sending email',<br>
+                  userFound: true,<br>
+                  sent: false<br>
+                }<br>
+              </code>
+            </td>
+            <td>
+              efter receiving quick-email request back-end should store the data in DB,
+              send an email on the email provided in the request,
+              send email to each admin user
+
+              example of email to the who made the request:
+
+              <div>
+                <h3>Thank you for your request</h3>
+                <p>
+                  We will contact you within next 3 hours
+                </p>
+                {{TODO: some footer here}}
+              </div>
+            </td>
+          </tr>
 
           <tr>
             <td colspan=5 style='background-color: #008080; font-weight: 700;'>Next requests should be made with token!</td>
@@ -856,57 +906,6 @@
 
               TODO: crate email on backend side, reset password functinalliy on fron end
               </p>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              POST
-            </td>
-            <td>
-              /api/quick-email
-            </td>
-            <td>
-              <code>
-                {<br>
-                  date: DateTime,<br>
-                  email: string,<br>
-                  ip: number<br>
-                  route: string<br>
-                }
-              </code>
-            </td>
-            <td>
-              sucess:<br>
-              <code>
-                {<br>
-                  message: 'email sent',<br>
-                  sent: false<br>
-                }<br>
-              </code>
-              error sending email:<br>
-              <code>
-                {<br>
-                  errorMsg: 'Failed sending email',<br>
-                  userFound: true,<br>
-                  sent: false<br>
-                }<br>
-              </code>
-            </td>
-            <td>
-              efter receiving quick-email request back-end should store the data in DB,
-              send an email on the email provided in the request,
-              send email to each admin user
-
-              example of email to the who made the request:
-
-              <div>
-                <h3>Thank you for your request</h3>
-                <p>
-                  We will contact you within next 3 hours
-                </p>
-                {{TODO: some footer here}}
-              </div>
             </td>
           </tr>
           
