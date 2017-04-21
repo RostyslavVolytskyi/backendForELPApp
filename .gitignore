@@ -3,3 +3,4 @@
 /uploads
 /mongo/**/*
 !/mongo/README.md
+config.js
