@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const fs = require('fs');
 const api = require('./app/routes/api')(express);
-const path = require("path");
+const path = require('path');
 const cors = require('cors')
 const originsWhitelist = [
     'http://localhost:3000' //this is front-end url for development
