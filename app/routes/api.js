@@ -6,9 +6,18 @@ const Contact = require('../models/contact');
 const QuickEmail = require('../models/quickEmail');
 
 const multer = require('multer');
-const upload = multer({
-    dest: './uploads'
-}).any();
+let savedFileName = '';
+const storage = multer.diskStorage({
+        destination: './uploads',
+        filename: function ( req, file, cb ) {
+            savedFileName = Date.now()+file.originalname;
+            cb( null, savedFileName );
+        }
+    }
+);
+
+const path = require('path');
+const upload = multer( { storage: storage } ).any();
 const fs = require('fs');
 const jsonwebtoken = require('jsonwebtoken');
 const config = require('../../config');
@@ -36,6 +45,10 @@ function createToken(user) {
 module.exports = (express) => {
 
     let api = express.Router();
+
+    api.get('/uploads/:name', function (req, res) {
+        res.sendFile(path.resolve(`./uploads/${req.params.name}`));
+    });
 
     // Post to DB
     api.post('/signup', function (req, res) {
@@ -282,7 +295,7 @@ module.exports = (express) => {
                     return;
                 }
                 res.json({
-                    path: fileUpload.file.path,
+                    path: `${req.protocol}://${req.get('host')}/api/uploads/${savedFileName}`,
                     contentType: fileUpload.file.contentType,
                     success: true,
                     message: `File saved to DB`
@@ -454,6 +467,7 @@ module.exports = (express) => {
 
         meal.save((err) => {
             if (err) {
+              console.log(err);
                 res.status(403).send({
                     success: false,
                     message: "Failed to save meal to DB"
