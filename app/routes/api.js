@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
         destination: './uploads',
         filename: function ( req, file, cb ) {
             savedFileName = Date.now()+file.originalname;
-            cb( null, Date.now()+file.originalname );
+            cb( null, savedFileName );
         }
     }
 );
@@ -47,7 +47,7 @@ module.exports = (express) => {
     let api = express.Router();
 
     api.get('/uploads/:name', function (req, res) {
-        res.sendfile(path.resolve(`./uploads/${req.params.name}`));
+        res.sendFile(path.resolve(`./uploads/${req.params.name}`));
     });
 
     // Post to DB
@@ -467,6 +467,7 @@ module.exports = (express) => {
 
         meal.save((err) => {
             if (err) {
+              console.log(err);
                 res.status(403).send({
                     success: false,
                     message: "Failed to save meal to DB"
