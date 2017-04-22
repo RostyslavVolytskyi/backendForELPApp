@@ -4,6 +4,7 @@ const Meal = require('../models/meal');
 const Place = require('../models/place');
 const Contact = require('../models/contact');
 const QuickEmail = require('../models/quickEmail');
+const mongoose = require('mongoose');
 
 const multer = require('multer');
 let savedFileName = '';
@@ -523,13 +524,25 @@ module.exports = (express) => {
             })
     });
 
+    // Get meals by array of meals id's
     api.get('/meals-by-ids/:ids', function (req, res) {
-      // TODO
-      res.json({
-          meals: [],
-          success: true,
-          message: `TODO!`,
-      });
+        const mealsArray = req.params.ids.split(',');
+        mealsArray.map((meal) => {
+            mongoose.Types.ObjectId(meal);
+        });
+
+        Meal.find({ _id: { $in: mealsArray}}, 
+            function (err, meals) {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+                res.json({
+                    meals: meals,
+                    success: true,
+                    message: `Meals found`,
+                });
+            });
     });
 
     // Delete meal by ID

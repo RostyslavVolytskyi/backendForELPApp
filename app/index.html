@@ -26,7 +26,20 @@
           </tr>
         </thead>
         <tbody>
-
+          <tr>
+            <td>GET</td>
+            <td>/api/uploads/:name</td>
+            <td>
+              <code>
+              /
+              </code>
+            </td>
+            <td>
+            </td>
+            <td>
+              For images img[src = ...]
+            </td>
+          </tr>
           <tr>
             <td>POST</td>
             <td>/api/signup</td>
@@ -504,6 +517,34 @@
             </td>
             <td>
                 Get meal by ID with user data (connection between collections 'users' and 'meals' in DB)
+            </td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/meals-by-ids/:ids</td>
+            <td>
+              <code>
+                /{ ids: [ObjectIDs] }
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+                {<br>
+                    &emsp; meals: meals,<br>
+                    &emsp; success: true,<br>
+                    &emsp; message: string<br>
+                }
+              </code><br>
+              fail:<br>
+              <code>
+                {<br>
+                    &emsp; success: false,<br>
+                }
+              </code>
+            </td>
+            <td>
+                Get meals by array of meals id's
             </td>
           </tr>
           <tr>
