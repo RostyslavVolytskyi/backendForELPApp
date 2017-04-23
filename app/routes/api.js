@@ -43,6 +43,17 @@ function createToken(user) {
     return token;
 }
 
+// create reusable transporter object using the default SMTP transport
+function emailTransportObject(){
+    return nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: config.ELPmail,
+            pass: config.ELPpass
+        }
+    });
+}
+
 module.exports = (express) => {
 
     let api = express.Router();
@@ -151,13 +162,7 @@ module.exports = (express) => {
                 }
 
                 // create reusable transporter object using the default SMTP transport
-                let transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: config.ELPmail,
-                        pass: config.ELPpass
-                    }
-                });
+                let transporter = emailTransportObject();
 
                 // setup email data with unicode symbols
                 let mailOptions = {
@@ -203,13 +208,7 @@ module.exports = (express) => {
             }
 
             // create reusable transporter object using the default SMTP transport
-            let transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: config.ELPmail,
-                    pass: config.ELPpass
-                }
-            });
+            let transporter = emailTransportObject();
 
             // setup email data with unicode symbols
             let mailOptions = {
@@ -421,13 +420,7 @@ module.exports = (express) => {
     // Send mail
     api.get('/mail', function (req, res) {
         // create reusable transporter object using the default SMTP transport
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: config.ELPmail,
-                pass: config.ELPpass
-            }
-        });
+        let transporter = emailTransportObject();
 
         // setup email data with unicode symbols
         let mailOptions = {
