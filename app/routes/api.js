@@ -137,16 +137,6 @@ module.exports = (express) => {
         });
     });
 
-    api.post('/user-by-email', function (req, res) {
-        User.find({ email: req.body.email}, function (err, user) {
-            if (err) {
-                res.status(500).send(err);
-                return;
-            }
-            res.json(user);
-        });
-    });
-
     // Send and change in DB recovery passport
     api.post('/send-recovery-pass-email', function (req, res) {
         const generatedPass = Math.random().toString(36).slice(2);
