@@ -99,6 +99,45 @@
               Login
             </td>
           </tr>
+          <tr>
+            <td>POST</td>
+            <td>/api/send-recovery-pass-email</td>
+            <td>
+              <code>
+              { email: email }
+              </code>
+            </td>
+            <td>
+              sucess:
+              <code>
+                {<br>
+                  message: 'Recovery pass email sent',<br />
+                  userFound: true,<br>
+                  sent: true,<br>
+                }<br>
+              </code>
+              fail:<br>
+              <code>
+                {<br>
+                  errorMsg: 'No user with such email was found'<br />
+                  userFound: false,<br>
+                  sent: false<br>
+                }<br>
+              </code>
+              error sending email:<br>
+              <code>
+                {<br>
+                  errorMsg: 'error sending email'<br />
+                  userFound: true,<br>
+                  sent: false<br>
+                }
+              </code>
+            </td>
+            <td>
+              should find the user with provided email, and send him a email with
+              password reset link
+            </td>
+          </tr>
 
           <tr>
             <td>POST</td>
@@ -927,50 +966,15 @@
           <tr>
             <td colspan=5 style='background-color: lightblue; font-weight: 700;'>TODO Api:</td>
           </tr>
-
           <tr>
-            <td>POST</td>
-            <td>/api/send-recovery-pass-email</td>
-            <td>
-              <code>
-              { email: email }
-              </code>
-            </td>
-            <td>
-              sucess:
-              <code>
-                {<br>
-                  message: 'Recovery pass email sent',<br />
-                  userFound: true,<br>
-                  sent: true,<br>
-                }<br>
-              </code>
-              fail:<br>
-              <code>
-                {<br>
-                  errorMsg: 'User not found'<br />
-                  userFound: false,<br>
-                  sent: false<br>
-                }<br>
-              </code>
-              error sending email:<br>
-              <code>
-                {<br>
-                  errorMsg: 'error sending email'<br />
-                  userFound: true,<br>
-                  sent: false<br>
-                }
-              </code>
-            </td>
-            <td>
-              <p>
-              should find the user with provided email, and send him a email with
-              password reset link
-
-              TODO: crate email on backend side, reset password functinalliy on fron end
-              </p>
-            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
           </tr>
+
+          
           
         </tbody>
       </table>
