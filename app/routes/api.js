@@ -5,6 +5,7 @@ const Place = require('../models/place');
 const Contact = require('../models/contact');
 const QuickEmail = require('../models/quickEmail');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt-nodejs');
 
 const multer = require('multer');
 let savedFileName = '';
@@ -133,6 +134,67 @@ module.exports = (express) => {
                     });
                 }
             }
+        });
+    });
+
+    api.post('/user-by-email', function (req, res) {
+        User.find({ email: req.body.email}, function (err, user) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            res.json(user);
+        });
+    });
+
+    // Send and change in DB recovery passport
+    api.post('/send-recovery-pass-email', function (req, res) {
+        const generatedPass = Math.random().toString(36).slice(2);
+
+        bcrypt.hash(generatedPass, null, null, (err, hash) => {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+
+            let hashPass = hash;
+            // { new: true } is here to return updated user, not previous one
+            User.findOneAndUpdate({ email: req.body.email}, { password: hashPass}, { new: true },
+                function (err, user) {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+
+                let transporter = emailTransportObject();
+
+                if(user) {
+                    // setup email data with unicode symbols
+                    let mailOptions = {
+                        from: `"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>`, // sender address
+                        to: `${user.email}`, // list of receivers
+                        subject: `Recovery pass`, // Subject line
+                        text: `Hello username !!! Your new password is: ${generatedPass}`, // plain text body
+                        html: `Hello username !!! Your new password is: <b>${generatedPass}</b>` // html body
+                    };
+
+                    // send mail with defined transport object
+                    transporter.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                            return console.log(error);
+                        }
+                        console.log('Message %s sent: %s', info.messageId, info.response);
+                    });
+
+                    res.json({message: 'Recovery pass email was sent',
+                            userFound: true,
+                            sent: true});
+                } else {
+                    res.json({message: 'No user with such email was found',
+                            userFound: false,
+                            sent: false});
+                }
+            });
         });
     });
 
@@ -426,9 +488,9 @@ module.exports = (express) => {
         let mailOptions = {
             from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
             to: config.adminMails, // list of receivers
-            subject: 'Change your life 🏋️', // Subject line
-            text: 'Hello username !!! You will use the best healthy app!! ❤️', // plain text body
-            html: 'Hello username !!! <b>You will use the best healthy app!! ❤️</b>' // html body
+            subject: `Change your life 🏋️`, // Subject line
+            text: `Hello username !!! You will use the best healthy app!! ❤️`, // plain text body
+            html: `Hello username !!! <b>You will use the best healthy app!! ❤️</b>` // html body
         };
 
         // send mail with defined transport object
