@@ -303,7 +303,7 @@ module.exports = (express) => {
             });
             res.send();
         });
-    })
+    });
 
     // Middleware to verify token
     api.use(function (req, res, next) {
@@ -314,7 +314,7 @@ module.exports = (express) => {
                 if (err) {
                     res.status(403).send({
                         success: false,
-                        message: "Failed to authrntificate user"
+                        message: "Failed to authentificate user"
                     });
                 } else {
                     req.decoded = decoded;
@@ -327,6 +327,50 @@ module.exports = (express) => {
                 message: "No Token Provided"
             });
         }
+    });
+
+    // Change password
+    api.post('/change-password', function (req, res) {
+        User.findOne({
+            email: req.decoded.email
+        }).select('password').exec((err, user) => {
+            if (err) throw err;
+            if (!user) {
+                res.status(404).send({
+                    success: false,
+                    message: "User doesn't exist"
+                });
+            } else if (user) {
+                let validPassword = user.comparePassword(req.body.password);
+                if (!validPassword) {
+                    res.status(401).send({
+                        userRegistered: true,
+                        success: false,
+                        message: "Please, fill in valid password"
+                    });
+                } else {
+                    bcrypt.hash(req.body.newpass, null, null, (err, hash) => {
+                        if (err) {
+                            res.status(500).send(err);
+                            return;
+                        }
+                        let hashPass = hash;
+                        user.update({password: hashPass}, function (err, user) {
+                            if (err) {
+                                res.status(500).send(err);
+                                return;
+                            }
+                            res.json({
+                                user: user,
+                                newpass: req.body.newpass,
+                                success: true,
+                                message: `Password successfully updated`
+                            });
+                        })
+                    })
+                }
+            }
+        });
     });
 
     // Upload a file
