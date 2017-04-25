@@ -361,8 +361,6 @@ module.exports = (express) => {
                                 return;
                             }
                             res.json({
-                                user: user,
-                                newpass: req.body.newpass,
                                 success: true,
                                 message: `Password successfully updated`
                             });
