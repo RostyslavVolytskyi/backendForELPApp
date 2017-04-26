@@ -172,7 +172,7 @@ module.exports = (express) => {
                         }
                     }, function(err, info) {
                         if(err){
-                            res.send(`Error: ${err}`);
+                            res.status(500).send(`Error: ${err}`);
                             return;
                         }
                         res.json({message: 'Recovery pass email was sent',
@@ -225,7 +225,7 @@ module.exports = (express) => {
                     }
                 }, function(err, info) {
                     if(err){
-                        res.send(`Error: ${err}`);
+                        res.status(500).send(`Error: ${err}`);
                         return;
                     }
                     res.json({
@@ -264,7 +264,7 @@ module.exports = (express) => {
                 }
             }, function(err, info) {
                 if(err){
-                    res.send(`Error: ${err}`);
+                    res.status(500).send(`Error: ${err}`);
                     return;
                 }
             });
@@ -277,7 +277,7 @@ module.exports = (express) => {
                 context: {}
             }, function(err, info) {
                 if(err){
-                    res.send(`Error: ${err}`);
+                    res.status(500).send(`Error: ${err}`);
                     return;
                 }
                 res.json({
@@ -508,7 +508,7 @@ module.exports = (express) => {
             }
         }, function(err, info) {
             if(err){
-                res.send(`Error: ${err}`);
+                res.status(500).send(`Error: ${err}`);
                 return;
             }
             res.json({
@@ -534,8 +534,7 @@ module.exports = (express) => {
 
         meal.save((err) => {
             if (err) {
-              console.log(err);
-                res.status(403).send({
+                res.status(500).send({
                     success: false,
                     message: "Failed to save meal to DB"
                 });
@@ -672,7 +671,7 @@ module.exports = (express) => {
 
         place.save((err) => {
             if (err) {
-                res.status(403).send({
+                res.status(500).send({
                     success: false,
                     message: "Failed to save place to DB"
                 });
