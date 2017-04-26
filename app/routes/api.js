@@ -346,7 +346,7 @@ module.exports = (express) => {
                     res.status(401).send({
                         userRegistered: true,
                         success: false,
-                        message: "Please, fill in valid password"
+                        message: "Current password is not valid"
                     });
                 } else {
                     bcrypt.hash(req.body.newpass, null, null, (err, hash) => {
