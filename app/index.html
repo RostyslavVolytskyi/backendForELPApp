@@ -267,6 +267,58 @@
           </tr>
 
           <tr>
+            <td>POST</td>
+            <td>/api/change-password</td>
+            <td>
+              <code>
+              {<br>
+              password: string,
+              newpass: string <br>
+              }
+              </code>
+            </td>
+            <td>
+              success:<br>
+              <code>
+              {<br>
+              success: true,
+              message: string<br>
+              } <br>
+              </code>
+              fail:<br>
+              <code>
+              {<br>
+              userRegistered: true,
+              success: false,
+              message: string<br>
+              } <br>
+              </code>
+            </td>
+            <td>
+              Change current password to a new one
+            </td>
+          </tr>
+          <tr>
+            <td>POST</td>
+            <td>/api/upload</td>
+            <td>
+              <code>
+              File should be uploaded
+              </code>
+            </td>
+            <td>
+              <code>
+                {<br>
+                  success: boolean,<br>
+                  message: string<br>
+                }
+              </code>
+            </td>
+            <td>
+            </td>
+          </tr>
+
+          <tr>
             <td>DELETE</td>
             <td>/api/user/:id</td>
             <td>
@@ -1003,7 +1055,9 @@
     <strong>Upload file:</strong> <br>
     <code>curl -F name=someName -F file=@README.md  http://localhost:9999/api/upload</code><br>
     <strong>DELETE:</strong> <br>
-    <code>curl -X DELETE http://localhost:9999/api/user/58d19e770bf1c112486b</code>
+    <code>curl -X DELETE http://localhost:9999/api/user/58d19e770bf1c112486b</code><br>
+    <strong>POST:</strong> <br>
+    <code>curl -H "x-access-token: &lt;token goes here&gt;" -d password=clinton123 -d newpass=c123 http://localhost:9999/api/change-password</code><br>
     </p>
   </div>
 </body>

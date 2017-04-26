@@ -26,6 +26,15 @@ const config = require('../../config');
 const secretKey = config.secretKey;
 const nodemailer = require('nodemailer');
 
+// create reusable transporter object using the default SMTP transport
+const mailer = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: config.ELPmail,
+                        pass: config.ELPpass
+                    }
+                });
+
 // Methode to create token
 function createToken(user) {
     const token = jsonwebtoken.sign({
@@ -42,17 +51,6 @@ function createToken(user) {
         expiresIn: '1h'
     });
     return token;
-}
-
-// create reusable transporter object using the default SMTP transport
-function emailTransportObject(){
-    return nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: config.ELPmail,
-            pass: config.ELPpass
-        }
-    });
 }
 
 module.exports = (express) => {
@@ -156,8 +154,6 @@ module.exports = (express) => {
                     return;
                 }
 
-                let transporter = emailTransportObject();
-
                 if(user) {
                     // setup email data with unicode symbols
                     let mailOptions = {
@@ -169,7 +165,7 @@ module.exports = (express) => {
                     };
 
                     // send mail with defined transport object
-                    transporter.sendMail(mailOptions, (error, info) => {
+                    mailer.sendMail(mailOptions, (error, info) => {
                         if (error) {
                             return console.log(error);
                         }
@@ -213,9 +209,6 @@ module.exports = (express) => {
                     return;
                 }
 
-                // create reusable transporter object using the default SMTP transport
-                let transporter = emailTransportObject();
-
                 // setup email data with unicode symbols
                 let mailOptions = {
                     from: `"${contact.fullName} 👦🏼" <eatlikeprofessional@gmail.com>`, // sender address
@@ -226,7 +219,7 @@ module.exports = (express) => {
                 };
 
                 // send mail with defined transport object
-                transporter.sendMail(mailOptions, (error, info) => {
+                mailer.sendMail(mailOptions, (error, info) => {
                     if (error) {
                         return console.log(error);
                     }
@@ -259,9 +252,6 @@ module.exports = (express) => {
                 return;
             }
 
-            // create reusable transporter object using the default SMTP transport
-            let transporter = emailTransportObject();
-
             // setup email data with unicode symbols
             let mailOptions = {
                 from: `"Anonymys 👦🏼" <eatlikeprofessional@gmail.com>`, // sender address
@@ -272,7 +262,7 @@ module.exports = (express) => {
             };
 
             // send mail with defined transport object
-            transporter.sendMail(mailOptions, (error, info) => {
+            mailer.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     return console.log(error);
                 }
@@ -289,7 +279,7 @@ module.exports = (express) => {
             };
 
             // send mail with defined transport object
-            transporter.sendMail(mailOptionsBack, (error, info) => {
+            mailer.sendMail(mailOptionsBack, (error, info) => {
                 if (error) {
                     return console.log(error);
                 }
@@ -346,7 +336,7 @@ module.exports = (express) => {
                     res.status(401).send({
                         userRegistered: true,
                         success: false,
-                        message: "Please, fill in valid password"
+                        message: "Current password is not valid"
                     });
                 } else {
                     bcrypt.hash(req.body.newpass, null, null, (err, hash) => {
@@ -513,9 +503,6 @@ module.exports = (express) => {
 
     // Send mail
     api.get('/mail', function (req, res) {
-        // create reusable transporter object using the default SMTP transport
-        let transporter = emailTransportObject();
-
         // setup email data with unicode symbols
         let mailOptions = {
             from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
@@ -526,7 +513,7 @@ module.exports = (express) => {
         };
 
         // send mail with defined transport object
-        transporter.sendMail(mailOptions, (error, info) => {
+        mailer.sendMail(mailOptions, (error, info) => {
             if (error) {
                 return console.log(error);
             }
