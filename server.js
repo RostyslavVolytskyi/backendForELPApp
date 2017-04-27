@@ -9,6 +9,7 @@ const api = require('./app/routes/api')(express);
 const path = require('path');
 const cors = require('cors')
 const originsWhitelist = [
+    'https://eatlikeproweb.herokuapp.com',
     'http://localhost:3000' //this is front-end url for development
 ];
 const corsOptions = {
