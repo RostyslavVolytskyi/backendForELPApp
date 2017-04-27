@@ -25,6 +25,7 @@ const jsonwebtoken = require('jsonwebtoken');
 const config = require('../../config');
 const secretKey = config.secretKey;
 const nodemailer = require('nodemailer');
+const hbs = require('nodemailer-express-handlebars');
 
 // create reusable transporter object using the default SMTP transport
 const mailer = nodemailer.createTransport({
@@ -34,6 +35,11 @@ const mailer = nodemailer.createTransport({
                         pass: config.ELPpass
                     }
                 });
+
+mailer.use('compile', hbs({
+    viewPath: 'app/views/email',
+    extName: '.hbs'    
+}))
 
 // Methode to create token
 function createToken(user) {
@@ -155,26 +161,24 @@ module.exports = (express) => {
                 }
 
                 if(user) {
-                    // setup email data with unicode symbols
-                    let mailOptions = {
-                        from: `"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>`, // sender address
-                        to: `${user.email}`, // list of receivers
+                    mailer.sendMail({
+                        from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
+                        to: user.email, // list of receivers
                         subject: `Recovery pass`, // Subject line
-                        text: `Hello username !!! Your new password is: ${generatedPass}`, // plain text body
-                        html: `Hello username !!! Your new password is: <b>${generatedPass}</b>` // html body
-                    };
-
-                    // send mail with defined transport object
-                    mailer.sendMail(mailOptions, (error, info) => {
-                        if (error) {
-                            return console.log(error);
+                        template: 'recoverypass',
+                        context: {
+                            generatedPass: generatedPass,
+                            firstName: user.firstName
                         }
-                        console.log('Message %s sent: %s', info.messageId, info.response);
+                    }, function(err, info) {
+                        if(err){
+                            res.status(500).send(`Error: ${err}`);
+                            return;
+                        }
+                        res.json({message: 'Recovery pass email was sent',
+                                userFound: true,
+                                sent: true});
                     });
-
-                    res.json({message: 'Recovery pass email was sent',
-                            userFound: true,
-                            sent: true});
                 } else {
                     res.json({message: 'No user with such email was found',
                             userFound: false,
@@ -209,29 +213,27 @@ module.exports = (express) => {
                     return;
                 }
 
-                // setup email data with unicode symbols
-                let mailOptions = {
+                mailer.sendMail({
                     from: `"${contact.fullName} 👦🏼" <eatlikeprofessional@gmail.com>`, // sender address
                     to: config.adminMails, // list of receivers
                     subject: `Notification from user ❗️`, // Subject line
-                    text: `Hello admin !!! ${contact.message}. Please reply me on ${contact.email}`, // plain text body
-                    html: `Hello admin !!! <p>${contact.message}</p><br><b>Please reply me on ${contact.email}</b>` // html body
-                };
-
-                // send mail with defined transport object
-                mailer.sendMail(mailOptions, (error, info) => {
-                    if (error) {
-                        return console.log(error);
+                    template: 'contactform',
+                    context: {
+                        message: contact.message,
+                        email: contact.email,
+                        fullName: contact.fullName
                     }
-                    console.log('Message %s sent: %s', info.messageId, info.response);
+                }, function(err, info) {
+                    if(err){
+                        res.status(500).send(`Error: ${err}`);
+                        return;
+                    }
+                    res.json({
+                        contact: contact,
+                        success: true,
+                        message: `Messages sent to admins! Contact form: ${contact.email} with user full name: "${contact.fullName}" was saved to DB!`
+                    });
                 });
-
-                res.json({
-                    contact: contact,
-                    success: true,
-                    message: `Messages sent to admins! Contact form: ${contact.email} with user full name: "${contact.fullName}" was saved to DB!`
-                });
-                res.send();
             });
         }
     });
@@ -252,46 +254,38 @@ module.exports = (express) => {
                 return;
             }
 
-            // setup email data with unicode symbols
-            let mailOptions = {
+            mailer.sendMail({
                 from: `"Anonymys 👦🏼" <eatlikeprofessional@gmail.com>`, // sender address
                 to: config.adminMails, // list of receivers
                 subject: `Notification from "Anonymys" user ❗️`, // Subject line
-                text: `Hello admin !!! Please contact me on ${quickEmail.email}`, // plain text body
-                html: `Hello admin !!! <br><b>Please contact me on ${quickEmail.email}</b>` // html body
-            };
-
-            // send mail with defined transport object
-            mailer.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    return console.log(error);
+                template: 'quickemail',
+                context: {
+                    email: quickEmail.email
                 }
-                console.log('Message %s sent: %s', info.messageId, info.response);
+            }, function(err, info) {
+                if(err){
+                    res.status(500).send(`Error: ${err}`);
+                    return;
+                }
             });
 
-                        // setup email data with unicode symbols
-            let mailOptionsBack = {
+            mailer.sendMail({
                 from: `"ELP 💪" <eatlikeprofessional@gmail.com>`, // sender address
-                to: `${quickEmail.email}`, // receiver
+                to: quickEmail.email, // list of receivers
                 subject: `ELP feedback`, // Subject line
-                text: `Hello User 😉 !!! Thank you for your request. We will contact you within next 3 hours.`, // plain text body
-                html: `Hello User 😉 !!! <p>Thank you for your request. We will contact you within next 3 hours.</p>` // html body
-            };
-
-            // send mail with defined transport object
-            mailer.sendMail(mailOptionsBack, (error, info) => {
-                if (error) {
-                    return console.log(error);
+                template: 'quickemailback',
+                context: {}
+            }, function(err, info) {
+                if(err){
+                    res.status(500).send(`Error: ${err}`);
+                    return;
                 }
-                console.log('Message %s sent: %s', info.messageId, info.response);
+                res.json({
+                    quickEmail: quickEmail,
+                    success: true,
+                    message: `Messages sent to admins with feedback! Quick email form: ${quickEmail.email} was saved to DB!`
+                });
             });
-
-            res.json({
-                quickEmail: quickEmail,
-                success: true,
-                message: `Messages sent to admins with feedback! Quick email form: ${quickEmail.email} was saved to DB!`
-            });
-            res.send();
         });
     });
 
@@ -501,29 +495,27 @@ module.exports = (express) => {
         }
     });
 
-    // Send mail
+    // Send mail (only for test purposes)
     api.get('/mail', function (req, res) {
-        // setup email data with unicode symbols
-        let mailOptions = {
+        mailer.sendMail({
             from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
             to: config.adminMails, // list of receivers
             subject: `Change your life 🏋️`, // Subject line
-            text: `Hello username !!! You will use the best healthy app!! ❤️`, // plain text body
-            html: `Hello username !!! <b>You will use the best healthy app!! ❤️</b>` // html body
-        };
-
-        // send mail with defined transport object
-        mailer.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return console.log(error);
+            template: 'example',
+            context: {
+                username: 'Example',
+                password: 'myPass'
             }
-            console.log('Message %s sent: %s', info.messageId, info.response);
+        }, function(err, info) {
+            if(err){
+                res.status(500).send(`Error: ${err}`);
+                return;
+            }
+            res.json({
+                success: true,
+                message: `Messages sent to admins`
+            })
         });
-
-        res.json({
-            success: true,
-            message: "Messages sent to admins"
-        })
     })
 
     // Add meal to DB
@@ -542,8 +534,7 @@ module.exports = (express) => {
 
         meal.save((err) => {
             if (err) {
-              console.log(err);
-                res.status(403).send({
+                res.status(500).send({
                     success: false,
                     message: "Failed to save meal to DB"
                 });
@@ -680,7 +671,7 @@ module.exports = (express) => {
 
         place.save((err) => {
             if (err) {
-                res.status(403).send({
+                res.status(500).send({
                     success: false,
                     message: "Failed to save place to DB"
                 });

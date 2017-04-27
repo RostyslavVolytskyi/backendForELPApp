@@ -1,8 +1,8 @@
-let gulp = require('gulp');
-let exec = require('child_process').exec;
-let runSequence = require('run-sequence');
-let open = require('gulp-open');
-
+const gulp = require('gulp');
+const exec = require('child_process').exec;
+const runSequence = require('run-sequence');
+const open = require('gulp-open');
+const config = require('./config');
 
 //Running mongo
 //http://stackoverflow.com/a/28048696/46810
@@ -48,7 +48,7 @@ gulp.task('start', (done) => {
 gulp.task('open', function () {
     gulp.src('./app/index.html')
         .pipe(open({
-            uri: 'http://localhost:9999'
+            uri: `http://localhost:${config.port}`
         }));
 });
 
