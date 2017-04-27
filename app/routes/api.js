@@ -5,6 +5,7 @@ const Place = require('../models/place');
 const Contact = require('../models/contact');
 const QuickEmail = require('../models/quickEmail');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt-nodejs');
 
 const multer = require('multer');
 let savedFileName = '';
@@ -24,6 +25,21 @@ const jsonwebtoken = require('jsonwebtoken');
 const config = require('../../config');
 const secretKey = config.secretKey;
 const nodemailer = require('nodemailer');
+const hbs = require('nodemailer-express-handlebars');
+
+// create reusable transporter object using the default SMTP transport
+const mailer = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: config.ELPmail,
+                        pass: config.ELPpass
+                    }
+                });
+
+mailer.use('compile', hbs({
+    viewPath: 'app/views/email',
+    extName: '.hbs'    
+}))
 
 // Methode to create token
 function createToken(user) {
@@ -125,6 +141,53 @@ module.exports = (express) => {
         });
     });
 
+    // Send and change in DB recovery passport
+    api.post('/send-recovery-pass-email', function (req, res) {
+        const generatedPass = Math.random().toString(36).slice(2);
+
+        bcrypt.hash(generatedPass, null, null, (err, hash) => {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+
+            let hashPass = hash;
+            // { new: true } is here to return updated user, not previous one
+            User.findOneAndUpdate({ email: req.body.email}, { password: hashPass}, { new: true },
+                function (err, user) {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+
+                if(user) {
+                    mailer.sendMail({
+                        from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
+                        to: user.email, // list of receivers
+                        subject: `Recovery pass`, // Subject line
+                        template: 'recoverypass',
+                        context: {
+                            generatedPass: generatedPass,
+                            firstName: user.firstName
+                        }
+                    }, function(err, info) {
+                        if(err){
+                            res.status(500).send(`Error: ${err}`);
+                            return;
+                        }
+                        res.json({message: 'Recovery pass email was sent',
+                                userFound: true,
+                                sent: true});
+                    });
+                } else {
+                    res.json({message: 'No user with such email was found',
+                            userFound: false,
+                            sent: false});
+                }
+            });
+        });
+    });
+
     // Send email from contact form
     api.post('/send-email', function (req, res) {
 
@@ -150,38 +213,27 @@ module.exports = (express) => {
                     return;
                 }
 
-                // create reusable transporter object using the default SMTP transport
-                let transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: config.ELPmail,
-                        pass: config.ELPpass
-                    }
-                });
-
-                // setup email data with unicode symbols
-                let mailOptions = {
+                mailer.sendMail({
                     from: `"${contact.fullName} 👦🏼" <eatlikeprofessional@gmail.com>`, // sender address
                     to: config.adminMails, // list of receivers
                     subject: `Notification from user ❗️`, // Subject line
-                    text: `Hello admin !!! ${contact.message}. Please reply me on ${contact.email}`, // plain text body
-                    html: `Hello admin !!! <p>${contact.message}</p><br><b>Please reply me on ${contact.email}</b>` // html body
-                };
-
-                // send mail with defined transport object
-                transporter.sendMail(mailOptions, (error, info) => {
-                    if (error) {
-                        return console.log(error);
+                    template: 'contactform',
+                    context: {
+                        message: contact.message,
+                        email: contact.email,
+                        fullName: contact.fullName
                     }
-                    console.log('Message %s sent: %s', info.messageId, info.response);
+                }, function(err, info) {
+                    if(err){
+                        res.status(500).send(`Error: ${err}`);
+                        return;
+                    }
+                    res.json({
+                        contact: contact,
+                        success: true,
+                        message: `Messages sent to admins! Contact form: ${contact.email} with user full name: "${contact.fullName}" was saved to DB!`
+                    });
                 });
-
-                res.json({
-                    contact: contact,
-                    success: true,
-                    message: `Messages sent to admins! Contact form: ${contact.email} with user full name: "${contact.fullName}" was saved to DB!`
-                });
-                res.send();
             });
         }
     });
@@ -202,57 +254,40 @@ module.exports = (express) => {
                 return;
             }
 
-            // create reusable transporter object using the default SMTP transport
-            let transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: config.ELPmail,
-                    pass: config.ELPpass
-                }
-            });
-
-            // setup email data with unicode symbols
-            let mailOptions = {
+            mailer.sendMail({
                 from: `"Anonymys 👦🏼" <eatlikeprofessional@gmail.com>`, // sender address
                 to: config.adminMails, // list of receivers
                 subject: `Notification from "Anonymys" user ❗️`, // Subject line
-                text: `Hello admin !!! Please contact me on ${quickEmail.email}`, // plain text body
-                html: `Hello admin !!! <br><b>Please contact me on ${quickEmail.email}</b>` // html body
-            };
-
-            // send mail with defined transport object
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    return console.log(error);
+                template: 'quickemail',
+                context: {
+                    email: quickEmail.email
                 }
-                console.log('Message %s sent: %s', info.messageId, info.response);
+            }, function(err, info) {
+                if(err){
+                    res.status(500).send(`Error: ${err}`);
+                    return;
+                }
             });
 
-                        // setup email data with unicode symbols
-            let mailOptionsBack = {
+            mailer.sendMail({
                 from: `"ELP 💪" <eatlikeprofessional@gmail.com>`, // sender address
-                to: `${quickEmail.email}`, // receiver
+                to: quickEmail.email, // list of receivers
                 subject: `ELP feedback`, // Subject line
-                text: `Hello User 😉 !!! Thank you for your request. We will contact you within next 3 hours.`, // plain text body
-                html: `Hello User 😉 !!! <p>Thank you for your request. We will contact you within next 3 hours.</p>` // html body
-            };
-
-            // send mail with defined transport object
-            transporter.sendMail(mailOptionsBack, (error, info) => {
-                if (error) {
-                    return console.log(error);
+                template: 'quickemailback',
+                context: {}
+            }, function(err, info) {
+                if(err){
+                    res.status(500).send(`Error: ${err}`);
+                    return;
                 }
-                console.log('Message %s sent: %s', info.messageId, info.response);
+                res.json({
+                    quickEmail: quickEmail,
+                    success: true,
+                    message: `Messages sent to admins with feedback! Quick email form: ${quickEmail.email} was saved to DB!`
+                });
             });
-
-            res.json({
-                quickEmail: quickEmail,
-                success: true,
-                message: `Messages sent to admins with feedback! Quick email form: ${quickEmail.email} was saved to DB!`
-            });
-            res.send();
         });
-    })
+    });
 
     // Middleware to verify token
     api.use(function (req, res, next) {
@@ -263,7 +298,7 @@ module.exports = (express) => {
                 if (err) {
                     res.status(403).send({
                         success: false,
-                        message: "Failed to authrntificate user"
+                        message: "Failed to authentificate user"
                     });
                 } else {
                     req.decoded = decoded;
@@ -276,6 +311,48 @@ module.exports = (express) => {
                 message: "No Token Provided"
             });
         }
+    });
+
+    // Change password
+    api.post('/change-password', function (req, res) {
+        User.findOne({
+            email: req.decoded.email
+        }).select('password').exec((err, user) => {
+            if (err) throw err;
+            if (!user) {
+                res.status(404).send({
+                    success: false,
+                    message: "User doesn't exist"
+                });
+            } else if (user) {
+                let validPassword = user.comparePassword(req.body.password);
+                if (!validPassword) {
+                    res.status(401).send({
+                        userRegistered: true,
+                        success: false,
+                        message: "Current password is not valid"
+                    });
+                } else {
+                    bcrypt.hash(req.body.newpass, null, null, (err, hash) => {
+                        if (err) {
+                            res.status(500).send(err);
+                            return;
+                        }
+                        let hashPass = hash;
+                        user.update({password: hashPass}, function (err, user) {
+                            if (err) {
+                                res.status(500).send(err);
+                                return;
+                            }
+                            res.json({
+                                success: true,
+                                message: `Password successfully updated`
+                            });
+                        })
+                    })
+                }
+            }
+        });
     });
 
     // Upload a file
@@ -418,38 +495,27 @@ module.exports = (express) => {
         }
     });
 
-    // Send mail
+    // Send mail (only for test purposes)
     api.get('/mail', function (req, res) {
-        // create reusable transporter object using the default SMTP transport
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: config.ELPmail,
-                pass: config.ELPpass
-            }
-        });
-
-        // setup email data with unicode symbols
-        let mailOptions = {
+        mailer.sendMail({
             from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
             to: config.adminMails, // list of receivers
-            subject: 'Change your life 🏋️', // Subject line
-            text: 'Hello username !!! You will use the best healthy app!! ❤️', // plain text body
-            html: 'Hello username !!! <b>You will use the best healthy app!! ❤️</b>' // html body
-        };
-
-        // send mail with defined transport object
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return console.log(error);
+            subject: `Change your life 🏋️`, // Subject line
+            template: 'example',
+            context: {
+                username: 'Example',
+                password: 'myPass'
             }
-            console.log('Message %s sent: %s', info.messageId, info.response);
+        }, function(err, info) {
+            if(err){
+                res.status(500).send(`Error: ${err}`);
+                return;
+            }
+            res.json({
+                success: true,
+                message: `Messages sent to admins`
+            })
         });
-
-        res.json({
-            success: true,
-            message: "Messages sent to admins"
-        })
     })
 
     // Add meal to DB
@@ -468,8 +534,7 @@ module.exports = (express) => {
 
         meal.save((err) => {
             if (err) {
-              console.log(err);
-                res.status(403).send({
+                res.status(500).send({
                     success: false,
                     message: "Failed to save meal to DB"
                 });
@@ -606,7 +671,7 @@ module.exports = (express) => {
 
         place.save((err) => {
             if (err) {
-                res.status(403).send({
+                res.status(500).send({
                     success: false,
                     message: "Failed to save place to DB"
                 });
