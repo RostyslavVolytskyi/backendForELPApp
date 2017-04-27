@@ -3,7 +3,7 @@ const Upload = require('../models/upload');
 const Meal = require('../models/meal');
 const Place = require('../models/place');
 const Contact = require('../models/contact');
-const QuickEmail = require('../models/quickEmail');
+const QuickEmail = require('../models/quickemail');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 
