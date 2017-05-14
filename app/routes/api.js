@@ -38,7 +38,7 @@ const mailer = nodemailer.createTransport({
 
 mailer.use('compile', hbs({
     viewPath: 'app/views/email',
-    extName: '.hbs'    
+    extName: '.hbs'
 }))
 
 // Methode to create token
@@ -596,7 +596,7 @@ module.exports = (express) => {
             mongoose.Types.ObjectId(meal);
         });
 
-        Meal.find({ _id: { $in: mealsArray}}, 
+        Meal.find({ _id: { $in: mealsArray}},
             function (err, meals) {
                 if (err) {
                     res.status(500).send(err);
@@ -648,7 +648,6 @@ module.exports = (express) => {
 
     // Add place to DB
     api.post('/add-place', function (req, res) {
-
         let place = new Place({
             name:               req.body.name,
             googleId:           req.body.googleId,
@@ -659,7 +658,7 @@ module.exports = (express) => {
             currency:           req.body.currency,
             elpOpeningHours:    req.body.elpOpeningHours,
             location:           req.body.location,
-            mealIds:            req.body.mealIds,
+            meals:              req.body.meals,
             deliveryAvailable:  req.body.deliveryAvailable,
             takeAwayAvailable:  req.body.takeAwayAvailable,
             paymentOptions:     req.body.paymentOptions,

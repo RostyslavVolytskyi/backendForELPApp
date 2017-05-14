@@ -1,5 +1,6 @@
 let mongoose = require('mongoose');
 const User = require('../models/user');
+const Meal = require('../models/meal');
 
 let Schema = mongoose.Schema;
 
@@ -32,6 +33,11 @@ const PaymentOptions = new Schema({
     selected:           Boolean
 });
 
+const PortionPrices = new Schema({
+    portionId:           String,
+    price:               Number
+});
+
 const PlaceSchema = new Schema({
     _creator: {
         type:           Schema.Types.ObjectId,
@@ -49,7 +55,7 @@ const PlaceSchema = new Schema({
     currency:           CurrencySchema,
     elpOpeningHours:    [ElpOpeningHours],
     location:           Schema.Types.Mixed,
-    mealIds:            [String],
+    meals:             { type : Array , 'default' : [] },
     deliveryAvailable:  Boolean,
     takeAwayAvailable:  Boolean,
     paymentOptions:     [PaymentOptions],
