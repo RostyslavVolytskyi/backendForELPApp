@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const AppUser = require('../models/user');
 const Upload = require('../models/upload');
 const Meal = require('../models/meal');
 const Place = require('../models/place');
@@ -10,16 +11,17 @@ const bcrypt = require('bcrypt-nodejs');
 const multer = require('multer');
 let savedFileName = '';
 const storage = multer.diskStorage({
-        destination: './uploads',
-        filename: function ( req, file, cb ) {
-            savedFileName = Date.now()+file.originalname;
-            cb( null, savedFileName );
-        }
+    destination: './uploads',
+    filename: function (req, file, cb) {
+        savedFileName = Date.now() + file.originalname;
+        cb(null, savedFileName);
     }
-);
+});
 
 const path = require('path');
-const upload = multer( { storage: storage } ).any();
+const upload = multer({
+    storage: storage
+}).any();
 const fs = require('fs');
 const jsonwebtoken = require('jsonwebtoken');
 const config = require('../../config');
@@ -29,12 +31,12 @@ const hbs = require('nodemailer-express-handlebars');
 
 // create reusable transporter object using the default SMTP transport
 const mailer = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: config.ELPmail,
-                        pass: config.ELPpass
-                    }
-                });
+    service: 'gmail',
+    auth: {
+        user: config.ELPmail,
+        pass: config.ELPpass
+    }
+});
 
 mailer.use('compile', hbs({
     viewPath: 'app/views/email',
@@ -79,6 +81,7 @@ module.exports = (express) => {
             });
         } else {
             let user = new User({
+                appUser: false,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
@@ -101,6 +104,45 @@ module.exports = (express) => {
                     user: user.getUserData(),
                     success: true,
                     message: `${user.firstName} was created with email: ${user.email}! Thanx for registration!`,
+                    token
+                });
+                res.send();
+            });
+        }
+    });
+
+    // Post to DB
+    api.post('/app-signup', function (req, res) {
+        if (req.body.password === null || req.body.password === '' ||
+            req.body.email === null || req.body.email === '') {
+            res.status(404).send({
+                success: false,
+                message: 'Ensure password and email were provided!'
+            });
+        } else {
+            let appUser = new AppUser({
+                appUser: true,
+                firstName: req.body.firstName || 'Unknown',
+                lastName: req.body.lastName || 'Unknown',
+                email: req.body.email,
+                password: req.body.password,
+                registrationTime: req.body.registrationTime,
+                registrationType: req.body.registrationType,
+                accountType: req.body.accountType,
+                image: req.body.image
+            });
+
+            let token = createToken(appUser);
+
+            appUser.save((err) => {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+                res.json({
+                    user: appUser.getUserData(),
+                    success: true,
+                    message: ` User was created with email: ${appUser.email}! Thanx for registration!`,
                     token
                 });
                 res.send();
@@ -153,38 +195,48 @@ module.exports = (express) => {
 
             let hashPass = hash;
             // { new: true } is here to return updated user, not previous one
-            User.findOneAndUpdate({ email: req.body.email}, { password: hashPass}, { new: true },
+            User.findOneAndUpdate({
+                    email: req.body.email
+                }, {
+                    password: hashPass
+                }, {
+                    new: true
+                },
                 function (err, user) {
-                if (err) {
-                    res.status(500).send(err);
-                    return;
-                }
+                    if (err) {
+                        res.status(500).send(err);
+                        return;
+                    }
 
-                if(user) {
-                    mailer.sendMail({
-                        from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
-                        to: user.email, // list of receivers
-                        subject: `Recovery pass`, // Subject line
-                        template: 'recoverypass',
-                        context: {
-                            generatedPass: generatedPass,
-                            firstName: user.firstName
-                        }
-                    }, function(err, info) {
-                        if(err){
-                            res.status(500).send(`Error: ${err}`);
-                            return;
-                        }
-                        res.json({message: 'Recovery pass email was sent',
+                    if (user) {
+                        mailer.sendMail({
+                            from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
+                            to: user.email, // list of receivers
+                            subject: `Recovery pass`, // Subject line
+                            template: 'recoverypass',
+                            context: {
+                                generatedPass: generatedPass,
+                                firstName: user.firstName
+                            }
+                        }, function (err, info) {
+                            if (err) {
+                                res.status(500).send(`Error: ${err}`);
+                                return;
+                            }
+                            res.json({
+                                message: 'Recovery pass email was sent',
                                 userFound: true,
-                                sent: true});
-                    });
-                } else {
-                    res.json({message: 'No user with such email was found',
+                                sent: true
+                            });
+                        });
+                    } else {
+                        res.json({
+                            message: 'No user with such email was found',
                             userFound: false,
-                            sent: false});
-                }
-            });
+                            sent: false
+                        });
+                    }
+                });
         });
     });
 
@@ -223,8 +275,8 @@ module.exports = (express) => {
                         email: contact.email,
                         fullName: contact.fullName
                     }
-                }, function(err, info) {
-                    if(err){
+                }, function (err, info) {
+                    if (err) {
                         res.status(500).send(`Error: ${err}`);
                         return;
                     }
@@ -262,8 +314,8 @@ module.exports = (express) => {
                 context: {
                     email: quickEmail.email
                 }
-            }, function(err, info) {
-                if(err){
+            }, function (err, info) {
+                if (err) {
                     res.status(500).send(`Error: ${err}`);
                     return;
                 }
@@ -275,8 +327,8 @@ module.exports = (express) => {
                 subject: `ELP feedback`, // Subject line
                 template: 'quickemailback',
                 context: {}
-            }, function(err, info) {
-                if(err){
+            }, function (err, info) {
+                if (err) {
                     res.status(500).send(`Error: ${err}`);
                     return;
                 }
@@ -339,7 +391,9 @@ module.exports = (express) => {
                             return;
                         }
                         let hashPass = hash;
-                        user.update({password: hashPass}, function (err, user) {
+                        user.update({
+                            password: hashPass
+                        }, function (err, user) {
                             if (err) {
                                 res.status(500).send(err);
                                 return;
@@ -396,7 +450,9 @@ module.exports = (express) => {
     // Find users by Name (regex pattern)
     api.get('/search-users/', function (req, res) {
         const rgxp = new RegExp(req.query.name, "i");
-        User.find({firstName: rgxp}, function (err, users) {
+        User.find({
+            firstName: rgxp
+        }, function (err, users) {
             if (err) {
                 res.status(500).send(err);
                 return;
@@ -506,8 +562,8 @@ module.exports = (express) => {
                 username: 'Example',
                 password: 'myPass'
             }
-        }, function(err, info) {
-            if(err){
+        }, function (err, info) {
+            if (err) {
                 res.status(500).send(`Error: ${err}`);
                 return;
             }
@@ -527,7 +583,7 @@ module.exports = (express) => {
             selected: req.body.selected,
             imageUrl: req.body.imageUrl,
             portions: req.body.portions,
-            date:     req.body.date,
+            date: req.body.date,
             _creator: req.decoded.id // assign the _id from the user (user._id === req.decoded.id)
 
         });
@@ -563,7 +619,9 @@ module.exports = (express) => {
     // Find meals by Name (regex pattern)
     api.get('/search-meals/', function (req, res) {
         const rgxp = new RegExp(req.query.name, "i");
-        Meal.find({name: rgxp }, function (err, meals) {
+        Meal.find({
+            name: rgxp
+        }, function (err, meals) {
             if (err) {
                 res.status(500).send(err);
                 return;
@@ -596,7 +654,11 @@ module.exports = (express) => {
             mongoose.Types.ObjectId(meal);
         });
 
-        Meal.find({ _id: { $in: mealsArray}},
+        Meal.find({
+                _id: {
+                    $in: mealsArray
+                }
+            },
             function (err, meals) {
                 if (err) {
                     res.status(500).send(err);
@@ -632,7 +694,7 @@ module.exports = (express) => {
             selected: req.body.selected,
             imageUrl: req.body.imageUrl,
             portions: req.body.portions,
-            date:     req.body.date,
+            date: req.body.date,
         }, function (err, meal) {
             if (err) {
                 res.status(500).send(err);
@@ -649,22 +711,22 @@ module.exports = (express) => {
     // Add place to DB
     api.post('/add-place', function (req, res) {
         let place = new Place({
-            name:               req.body.name,
-            googleId:           req.body.googleId,
-            email:              req.body.email,
-            phone:              req.body.phone,
-            fullAddress:        req.body.fullAddress,
-            website:            req.body.website,
-            currency:           req.body.currency,
-            elpOpeningHours:    req.body.elpOpeningHours,
-            location:           req.body.location,
-            meals:              req.body.meals,
-            deliveryAvailable:  req.body.deliveryAvailable,
-            takeAwayAvailable:  req.body.takeAwayAvailable,
-            paymentOptions:     req.body.paymentOptions,
-            rating:             req.body.rating,
-            date:               req.body.date,
-            _creator:           req.decoded.id // assign the _id from the user (user._id === req.decoded.id)
+            name: req.body.name,
+            googleId: req.body.googleId,
+            email: req.body.email,
+            phone: req.body.phone,
+            fullAddress: req.body.fullAddress,
+            website: req.body.website,
+            currency: req.body.currency,
+            elpOpeningHours: req.body.elpOpeningHours,
+            location: req.body.location,
+            meals: req.body.meals,
+            deliveryAvailable: req.body.deliveryAvailable,
+            takeAwayAvailable: req.body.takeAwayAvailable,
+            paymentOptions: req.body.paymentOptions,
+            rating: req.body.rating,
+            date: req.body.date,
+            _creator: req.decoded.id // assign the _id from the user (user._id === req.decoded.id)
 
         });
 
@@ -698,7 +760,9 @@ module.exports = (express) => {
     // Find places by Name (regex pattern)
     api.get('/search-places/', function (req, res) {
         const rgxp = new RegExp(req.query.name, "i");
-        Place.find({name: rgxp }, function (err, places) {
+        Place.find({
+            name: rgxp
+        }, function (err, places) {
             if (err) {
                 res.status(500).send(err);
                 return;
@@ -741,21 +805,21 @@ module.exports = (express) => {
     // Update place by ID
     api.put('/place/:id', function (req, res) {
         Place.findByIdAndUpdate(req.params.id, {
-            name:               req.body.name,
-            googleId:           req.body.googleId,
-            email:              req.body.email,
-            phone:              req.body.phone,
-            fullAddress:        req.body.fullAddress,
-            website:            req.body.website,
-            currency:           req.body.currency,
-            elpOpeningHours:    req.body.elpOpeningHours,
-            location:           req.body.location,
-            mealIds:            [req.body.mealIds],
-            deliveryAvailable:  req.body.deliveryAvailable,
-            takeAwayAvailable:  req.body.takeAwayAvailable,
-            paymentOptions:     req.body.paymentOptions,
-            rating:             req.body.rating,
-            date:               req.body.date
+            name: req.body.name,
+            googleId: req.body.googleId,
+            email: req.body.email,
+            phone: req.body.phone,
+            fullAddress: req.body.fullAddress,
+            website: req.body.website,
+            currency: req.body.currency,
+            elpOpeningHours: req.body.elpOpeningHours,
+            location: req.body.location,
+            mealIds: [req.body.mealIds],
+            deliveryAvailable: req.body.deliveryAvailable,
+            takeAwayAvailable: req.body.takeAwayAvailable,
+            paymentOptions: req.body.paymentOptions,
+            rating: req.body.rating,
+            date: req.body.date
         }, function (err, place) {
             if (err) {
                 res.status(500).send(err);
@@ -771,7 +835,9 @@ module.exports = (express) => {
 
     // Get places by User ID
     api.get('/user-places', function (req, res) {
-        Place.find({_creator: req.decoded.id }, function (err, places) {
+        Place.find({
+            _creator: req.decoded.id
+        }, function (err, places) {
             if (err) {
                 res.status(500).send(err);
                 return;
