@@ -167,7 +167,7 @@ module.exports = (express) => {
                     res.status(401).send({
                         userRegistered: true,
                         success: false,
-                        message: "Invalid Password"
+                        message: "User already registered"
                     });
                 } else {
                     //token
