@@ -41,4 +41,5 @@ gulp
 * install mongoDB Compass to observe and edit your local mongoDB (default port 27017)
 
 ### Deployed on Heroku
-Visist https://eatlikepro-node.herokuapp.com
+Visit https://eatlikepro-node.herokuapp.com
+Front end part https://eatlikeproweb.herokuapp.com/
