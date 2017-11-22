@@ -97,7 +97,11 @@ module.exports = (express) => {
 
             user.save((err) => {
                 if (err) {
-                    res.status(500).send(err);
+                    res.status(500).send({
+                        success: false,
+                        message: 'User save failed',
+                        error: err
+                    });
                     return;
                 }
                 res.json({
@@ -189,7 +193,11 @@ module.exports = (express) => {
 
         bcrypt.hash(generatedPass, null, null, (err, hash) => {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: 'Error sending recovery password',
+                    error: err
+                });
                 return;
             }
 
@@ -208,23 +216,27 @@ module.exports = (express) => {
                         return;
                     }
 
-                    if (user) {
-                        mailer.sendMail({
-                            from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
-                            to: user.email, // list of receivers
-                            subject: `Recovery pass`, // Subject line
-                            template: 'recoverypass',
-                            context: {
-                                generatedPass: generatedPass,
-                                firstName: user.firstName
-                            }
-                        }, function (err, info) {
-                            if (err) {
-                                res.status(500).send(`Error: ${err}`);
-                                return;
-                            }
-                            res.json({
-                                message: 'Recovery pass email was sent',
+                if(user) {
+                    mailer.sendMail({
+                        from: '"Eat Like Pro 💪" <eatlikeprofessional@gmail.com>', // sender address
+                        to: user.email, // list of receivers
+                        subject: `Recovery pass`, // Subject line
+                        template: 'recoverypass',
+                        context: {
+                            generatedPass: generatedPass,
+                            firstName: user.firstName
+                        }
+                    }, function(err, info) {
+                        if(err){
+                            res.status(500).send({
+                                  success: false,
+                                  message: 'Error sending email',
+                                  error: err
+                              });
+
+                            return;
+                        }
+                        res.json({message: 'Recovery pass email was sent',
                                 userFound: true,
                                 sent: true
                             });
@@ -261,7 +273,11 @@ module.exports = (express) => {
 
             contact.save((err) => {
                 if (err) {
-                    res.status(500).send(err);
+                    res.status(500).send({
+                        success: false,
+                        message: 'Error saving contact',
+                        error: err
+                    });
                     return;
                 }
 
@@ -275,9 +291,14 @@ module.exports = (express) => {
                         email: contact.email,
                         fullName: contact.fullName
                     }
-                }, function (err, info) {
-                    if (err) {
-                        res.status(500).send(`Error: ${err}`);
+                }, function(err, info) {
+                    if(err){
+                        res.status(500).send({
+                              success: false,
+                              message: 'Error sending email',
+                              error: err
+                          }
+                        );
                         return;
                     }
                     res.json({
@@ -302,7 +323,11 @@ module.exports = (express) => {
 
         quickEmail.save((err) => {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: 'Erorr saving quick contact email',
+                    error: err
+                });
                 return;
             }
 
@@ -314,9 +339,13 @@ module.exports = (express) => {
                 context: {
                     email: quickEmail.email
                 }
-            }, function (err, info) {
-                if (err) {
-                    res.status(500).send(`Error: ${err}`);
+            }, function(err, info) {
+                if(err){
+                    res.status(500).send({
+                        success: false,
+                        message: 'Error sending email',
+                        error: err
+                    });
                     return;
                 }
             });
@@ -327,9 +356,13 @@ module.exports = (express) => {
                 subject: `ELP feedback`, // Subject line
                 template: 'quickemailback',
                 context: {}
-            }, function (err, info) {
-                if (err) {
-                    res.status(500).send(`Error: ${err}`);
+            }, function(err, info) {
+                if(err){
+                    res.status(500).send({
+                        success: false,
+                        message: 'Error sending email',
+                        error: err
+                    });
                     return;
                 }
                 res.json({
@@ -345,12 +378,23 @@ module.exports = (express) => {
     api.use(function (req, res, next) {
         console.log("Somebody just came to our app!");
         let token = req.body.token || req.query.token || req.headers['x-access-token'];
+
         if (token) {
             jsonwebtoken.verify(token, secretKey, function (err, decoded) {
                 if (err) {
+                    if(err.name === 'TokenExpiredError') {
+                      res.status(403).send({
+                          success: false,
+                          message: "Session expired",
+                          error: err
+                      });
+
+                      return;
+                    }
                     res.status(403).send({
                         success: false,
-                        message: "Failed to authentificate user"
+                        message: "Failed to authentificate user",
+                        error: err
                     });
                 } else {
                     req.decoded = decoded;
@@ -387,7 +431,11 @@ module.exports = (express) => {
                 } else {
                     bcrypt.hash(req.body.newpass, null, null, (err, hash) => {
                         if (err) {
-                            res.status(500).send(err);
+                            res.status(500).send({
+                                success: false,
+                                message: 'Error saving user',
+                                error: err
+                            });
                             return;
                         }
                         let hashPass = hash;
@@ -395,7 +443,11 @@ module.exports = (express) => {
                             password: hashPass
                         }, function (err, user) {
                             if (err) {
-                                res.status(500).send(err);
+                                res.status(500).send({
+                                    success: false,
+                                    message: 'Error saving user',
+                                    error: err
+                                });
                                 return;
                             }
                             res.json({
@@ -413,7 +465,11 @@ module.exports = (express) => {
     api.post('/upload', function (req, res) {
         upload(req, res, function (err) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: 'Error uploading file',
+                    error: err
+                });
                 return;
             }
 
@@ -423,7 +479,11 @@ module.exports = (express) => {
             fileUpload.file.path = req.files[0].path;
             fileUpload.save((err) => {
                 if (err) {
-                    res.status(500).send(err);
+                    res.status(500).send({
+                        success: false,
+                        message: 'Error uploading file',
+                        error: err
+                    });
                     return;
                 }
                 res.json({
@@ -440,7 +500,11 @@ module.exports = (express) => {
     api.get('/users', function (req, res) {
         User.find({}, function (err, users) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: 'Error getting users',
+                    error: err
+                });
                 return;
             }
             res.json(users);
@@ -454,7 +518,11 @@ module.exports = (express) => {
             firstName: rgxp
         }, function (err, users) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: 'Error searching users',
+                    error: err
+                });
                 return;
             }
             res.json(users);
@@ -465,7 +533,11 @@ module.exports = (express) => {
     api.delete('/user/:id', function (req, res) {
         User.findByIdAndRemove(req.params.id, function (err, user) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: 'Error deleting user',
+                    error: err
+                });
                 return;
             }
             res.json({
@@ -479,7 +551,11 @@ module.exports = (express) => {
     api.get('/user/:id', function (req, res) {
         User.findById(req.params.id, function (err, user) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: 'Error finding user',
+                    error: err
+                });
                 return;
             }
             res.json({
@@ -503,7 +579,11 @@ module.exports = (express) => {
             image: req.body.image
         }, function (err, user) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: 'Error updating user',
+                    error: err
+                });
                 return;
             }
             res.json({
@@ -538,7 +618,11 @@ module.exports = (express) => {
 
             user.save((err) => {
                 if (err) {
-                    res.status(500).send(err);
+                    res.status(500).send({
+                        success: false,
+                        message: 'Error saving user',
+                        error: err
+                    });
                     return;
                 }
                 res.json({
@@ -562,9 +646,13 @@ module.exports = (express) => {
                 username: 'Example',
                 password: 'myPass'
             }
-        }, function (err, info) {
-            if (err) {
-                res.status(500).send(`Error: ${err}`);
+        }, function(err, info) {
+            if(err){
+                res.status(500).send({
+                    success: false,
+                    message: 'Error sending email',
+                    error: err
+                });
                 return;
             }
             res.json({
@@ -592,7 +680,8 @@ module.exports = (express) => {
             if (err) {
                 res.status(500).send({
                     success: false,
-                    message: "Failed to save meal to DB"
+                    message: "Failed to save meal to DB",
+                    error: err
                 });
             }
             res.json({
@@ -609,7 +698,11 @@ module.exports = (express) => {
     api.get('/meals', function (req, res) {
         Meal.find({}, function (err, meals) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: "Error getting all meals",
+                    error: err
+                });
                 return;
             }
             res.json(meals);
@@ -623,7 +716,11 @@ module.exports = (express) => {
             name: rgxp
         }, function (err, meals) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: "Error searching meals",
+                    error: err
+                });
                 return;
             }
             res.json(meals);
@@ -636,7 +733,11 @@ module.exports = (express) => {
             .populate('_creator')
             .exec(function (err, meal) {
                 if (err) {
-                    res.status(500).send(err);
+                    res.status(500).send({
+                        success: false,
+                        message: "Error getting meal",
+                        error: err
+                    });
                     return;
                 }
                 res.json({
@@ -661,7 +762,11 @@ module.exports = (express) => {
             },
             function (err, meals) {
                 if (err) {
-                    res.status(500).send(err);
+                    res.status(500).send({
+                        success: false,
+                        message: "Error getting meals",
+                        error: err
+                    });
                     return;
                 }
                 res.json({
@@ -676,7 +781,11 @@ module.exports = (express) => {
     api.delete('/meal/:id', function (req, res) {
         Meal.findByIdAndRemove(req.params.id, function (err, meal) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: "Error deleting meal",
+                    error: err
+                });
                 return;
             }
             res.json({
@@ -697,7 +806,11 @@ module.exports = (express) => {
             date: req.body.date,
         }, function (err, meal) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: "Error updating meal",
+                    error: err
+                });
                 return;
             }
             res.json({
@@ -734,7 +847,8 @@ module.exports = (express) => {
             if (err) {
                 res.status(500).send({
                     success: false,
-                    message: "Failed to save place to DB"
+                    message: "Failed to save place to DB",
+                    error: err
                 });
             }
             res.json({
@@ -750,7 +864,11 @@ module.exports = (express) => {
     api.get('/places', function (req, res) {
         Place.find({}, function (err, places) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: "Error getting all places",
+                    error: err
+                });
                 return;
             }
             res.json(places);
@@ -764,7 +882,11 @@ module.exports = (express) => {
             name: rgxp
         }, function (err, places) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: "Error searching places",
+                    error: err
+                });
                 return;
             }
             res.json(places);
@@ -777,7 +899,11 @@ module.exports = (express) => {
             .populate('_creator')
             .exec(function (err, place) {
                 if (err) {
-                    res.status(500).send(err);
+                    res.status(500).send({
+                        success: false,
+                        message: "Error geting place",
+                        error: err
+                    });
                     return;
                 }
                 res.json({
@@ -792,7 +918,11 @@ module.exports = (express) => {
     api.delete('/place/:id', function (req, res) {
         Place.findByIdAndRemove(req.params.id, function (err, place) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: "Error deleting place",
+                    error: err
+                });
                 return;
             }
             res.json({
@@ -822,7 +952,11 @@ module.exports = (express) => {
             date: req.body.date
         }, function (err, place) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: "Error updating place",
+                    error: err
+                });
                 return;
             }
             res.json({
@@ -839,7 +973,11 @@ module.exports = (express) => {
             _creator: req.decoded.id
         }, function (err, places) {
             if (err) {
-                res.status(500).send(err);
+                res.status(500).send({
+                    success: false,
+                    message: "Error geting places",
+                    error: err
+                });
                 return;
             }
             res.json(places);
